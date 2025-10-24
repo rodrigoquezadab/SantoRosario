@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cómo rezar el Santo Rosario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        h4 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .prayer-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .prayer-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .prayer-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .prayer-button:active {
+            transform: translateY(0);
+        }
+        
+        .prayer-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 10px;
+        }
+        
+        .mystery-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .intro-text {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+        
+        .completed {
+            opacity: 0.6;
+            background: #e8f5e9;
+        }
+        
+        .response {
+            font-style: italic;
+            color: #666;
+            margin-left: 20px;
+        }
+        
+        .quote-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        
+        .quote-box p {
+            font-style: italic;
+            color: #1976d2;
+        }
+        
+        .quote-author {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cómo rezar el Santo Rosario</h1>
+        
+        <p class="intro-text">Sigue paso a paso cada oración y pulsa en el icono al terminarla.</p>
+        
+        <div class="quote-box">
+            <p>El Santo Rosario es una devoción recomendada por muchos Papas y santos. La misma Virgen pidió que se rezase en Lourdes y Fátima.</p>
+        </div>
+
+        <!-- INICIO -->
+        <div class="prayer-section">
+            <h4>Inicio</h4>
+            <div class="prayer-text">
+                <p>Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor Dios Nuestro. En el nombre del Padre, del Hijo y del Espíritu Santo. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- BAJO TU AMPARO -->
+        <div class="prayer-section">
+            <h4>Bajo tu amparo</h4>
+            <div class="prayer-text">
+                <p>Bajo tu amparo nos acogemos, santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh siempre Virgen, gloriosa y bendita!</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- ACTO DE CONTRICIÓN -->
+        <div class="prayer-section">
+            <h4>Acto de contrición</h4>
+            <div class="prayer-text">
+                <p>Señor mío Jesucristo, Dios y hombre verdadero, Creador, Padre y Redentor mío. Por ser Tú quién eres, Bondad infinita, y porque te amo sobre todas las cosas, me pesa de todo corazón haberte ofendido. También me pesa que puedes castigarme con las penas del infierno. Ayudado de tu divina gracia propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- INVOCACIONES INICIALES -->
+        <div class="prayer-section">
+            <h4>Invocaciones iniciales</h4>
+            <div class="prayer-text">
+                <p>Señor, ábreme los labios.</p>
+                <p class="response">Y mi boca proclamará tu alabanza.</p>
+                <br>
+                <p>Dios mío, ven en mi auxilio.</p>
+                <p class="response">Señor, date prisa en socorrerme.</p>
+                <br>
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p class="response">Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- PRIMER MISTERIO -->
+        <h2>Primer Misterio</h2>
+        <div class="mystery-box">
+            <p><strong>Gozosos (lunes y sábado):</strong> La Encarnación del Hijo de Dios</p>
+            <p><strong>Gloriosos (miércoles y domingo):</strong> La Resurrección del Hijo de Dios</p>
+            <p><strong>Dolorosos (martes y viernes):</strong> La Oración de Jesús en el huerto</p>
+            <p><strong>Luminosos (jueves):</strong> El Bautismo de Jesús en el Jordán</p>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Padrenuestro</h4>
+            <div class="prayer-text">
+                <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.</p>
+                <p>Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>10 Avemarías</h4>
+            <div class="prayer-text">
+                <p>Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.</p>
+                <p>Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">1</button>
+            <button class="prayer-button" onclick="markCompleted(this)">2</button>
+            <button class="prayer-button" onclick="markCompleted(this)">3</button>
+            <button class="prayer-button" onclick="markCompleted(this)">4</button>
+            <button class="prayer-button" onclick="markCompleted(this)">5</button>
+            <button class="prayer-button" onclick="markCompleted(this)">6</button>
+            <button class="prayer-button" onclick="markCompleted(this)">7</button>
+            <button class="prayer-button" onclick="markCompleted(this)">8</button>
+            <button class="prayer-button" onclick="markCompleted(this)">9</button>
+            <button class="prayer-button" onclick="markCompleted(this)">10</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Gloria</h4>
+            <div class="prayer-text">
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Oh, Jesús Mío</h4>
+            <div class="prayer-text">
+                <p>Oh Jesús mío, perdónanos. Líbranos del fuego del infierno, lleva a todas las almas al cielo, especialmente a las más necesitadas.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- SEGUNDO MISTERIO -->
+        <h2>Segundo Misterio</h2>
+        <div class="mystery-box">
+            <p><strong>Gozosos (lunes y sábado):</strong> La Visitación de Nuestra Señora a su prima santa Isabel</p>
+            <p><strong>Gloriosos (miércoles y domingo):</strong> La Ascensión del Señor a los Cielos</p>
+            <p><strong>Dolorosos (martes y viernes):</strong> La Flagelación del Señor</p>
+            <p><strong>Luminosos (jueves):</strong> La autorrevelación de Jesús en las bodas de Caná</p>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Padrenuestro</h4>
+            <div class="prayer-text">
+                <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.</p>
+                <p>Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>10 Avemarías</h4>
+            <div class="prayer-text">
+                <p>Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.</p>
+                <p>Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">1</button>
+            <button class="prayer-button" onclick="markCompleted(this)">2</button>
+            <button class="prayer-button" onclick="markCompleted(this)">3</button>
+            <button class="prayer-button" onclick="markCompleted(this)">4</button>
+            <button class="prayer-button" onclick="markCompleted(this)">5</button>
+            <button class="prayer-button" onclick="markCompleted(this)">6</button>
+            <button class="prayer-button" onclick="markCompleted(this)">7</button>
+            <button class="prayer-button" onclick="markCompleted(this)">8</button>
+            <button class="prayer-button" onclick="markCompleted(this)">9</button>
+            <button class="prayer-button" onclick="markCompleted(this)">10</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Gloria</h4>
+            <div class="prayer-text">
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Oh, Jesús Mío</h4>
+            <div class="prayer-text">
+                <p>Oh Jesús mío, perdónanos. Líbranos del fuego del infierno, lleva a todas las almas al cielo, especialmente a las más necesitadas.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- TERCER MISTERIO -->
+        <h2>Tercer Misterio</h2>
+        <div class="mystery-box">
+            <p><strong>Gozosos (lunes y sábado):</strong> El Nacimiento del Hijo de Dios</p>
+            <p><strong>Gloriosos (miércoles y domingo):</strong> La Venida del Espíritu Santo sobre los Apóstoles</p>
+            <p><strong>Dolorosos (martes y viernes):</strong> La Coronación de espinas</p>
+            <p><strong>Luminosos (jueves):</strong> El anuncio del Reino de Dios invitando a la conversión</p>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Padrenuestro</h4>
+            <div class="prayer-text">
+                <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.</p>
+                <p>Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>10 Avemarías</h4>
+            <div class="prayer-text">
+                <p>Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.</p>
+                <p>Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">1</button>
+            <button class="prayer-button" onclick="markCompleted(this)">2</button>
+            <button class="prayer-button" onclick="markCompleted(this)">3</button>
+            <button class="prayer-button" onclick="markCompleted(this)">4</button>
+            <button class="prayer-button" onclick="markCompleted(this)">5</button>
+            <button class="prayer-button" onclick="markCompleted(this)">6</button>
+            <button class="prayer-button" onclick="markCompleted(this)">7</button>
+            <button class="prayer-button" onclick="markCompleted(this)">8</button>
+            <button class="prayer-button" onclick="markCompleted(this)">9</button>
+            <button class="prayer-button" onclick="markCompleted(this)">10</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Gloria</h4>
+            <div class="prayer-text">
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Oh, Jesús Mío</h4>
+            <div class="prayer-text">
+                <p>Oh Jesús mío, perdónanos. Líbranos del fuego del infierno, lleva a todas las almas al cielo, especialmente a las más necesitadas.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- CUARTO MISTERIO -->
+        <h2>Cuarto Misterio</h2>
+        <div class="mystery-box">
+            <p><strong>Gozosos (lunes y sábado):</strong> La Presentación de Jesús en el templo</p>
+            <p><strong>Gloriosos (miércoles y domingo):</strong> La Asunción de nuestra Señora a los Cielos</p>
+            <p><strong>Dolorosos (martes y viernes):</strong> Jesús con la Cruz a cuestas, camino del Calvario</p>
+            <p><strong>Luminosos (jueves):</strong> La Transfiguración</p>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Padrenuestro</h4>
+            <div class="prayer-text">
+                <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.</p>
+                <p>Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>10 Avemarías</h4>
+            <div class="prayer-text">
+                <p>Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.</p>
+                <p>Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">1</button>
+            <button class="prayer-button" onclick="markCompleted(this)">2</button>
+            <button class="prayer-button" onclick="markCompleted(this)">3</button>
+            <button class="prayer-button" onclick="markCompleted(this)">4</button>
+            <button class="prayer-button" onclick="markCompleted(this)">5</button>
+            <button class="prayer-button" onclick="markCompleted(this)">6</button>
+            <button class="prayer-button" onclick="markCompleted(this)">7</button>
+            <button class="prayer-button" onclick="markCompleted(this)">8</button>
+            <button class="prayer-button" onclick="markCompleted(this)">9</button>
+            <button class="prayer-button" onclick="markCompleted(this)">10</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Gloria</h4>
+            <div class="prayer-text">
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Oh, Jesús Mío</h4>
+            <div class="prayer-text">
+                <p>Oh Jesús mío, perdónanos. Líbranos del fuego del infierno, lleva a todas las almas al cielo, especialmente a las más necesitadas.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- QUINTO MISTERIO -->
+        <h2>Quinto Misterio</h2>
+        <div class="mystery-box">
+            <p><strong>Gozosos (lunes y sábado):</strong> El Niño Jesús perdido y hallado en el templo</p>
+            <p><strong>Gloriosos (miércoles y domingo):</strong> La Coronación de la Santísima Virgen como Reina de Cielos y Tierra</p>
+            <p><strong>Dolorosos (martes y viernes):</strong> La Crucifixión y Muerte de nuestro Señor</p>
+            <p><strong>Luminosos (jueves):</strong> La Institución de la Eucaristía</p>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Padrenuestro</h4>
+            <div class="prayer-text">
+                <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.</p>
+                <p>Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>10 Avemarías</h4>
+            <div class="prayer-text">
+                <p>Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.</p>
+                <p>Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">1</button>
+            <button class="prayer-button" onclick="markCompleted(this)">2</button>
+            <button class="prayer-button" onclick="markCompleted(this)">3</button>
+            <button class="prayer-button" onclick="markCompleted(this)">4</button>
+            <button class="prayer-button" onclick="markCompleted(this)">5</button>
+            <button class="prayer-button" onclick="markCompleted(this)">6</button>
+            <button class="prayer-button" onclick="markCompleted(this)">7</button>
+            <button class="prayer-button" onclick="markCompleted(this)">8</button>
+            <button class="prayer-button" onclick="markCompleted(this)">9</button>
+            <button class="prayer-button" onclick="markCompleted(this)">10</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Gloria</h4>
+            <div class="prayer-text">
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Oh, Jesús Mío</h4>
+            <div class="prayer-text">
+                <p>Oh Jesús mío, perdónanos. Líbranos del fuego del infierno, lleva a todas las almas al cielo, especialmente a las más necesitadas.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- LETANÍAS -->
+        <h2>Letanías de la Santísima Virgen</h2>
+        <div class="prayer-section">
+            <div class="prayer-text">
+                <p>Señor, ten piedad</p>
+                <p>Cristo, ten piedad</p>
+                <p>Señor, ten piedad</p>
+                <p>Cristo, óyenos</p>
+                <p>Cristo, escúchanos</p>
+                <br>
+                <p>Dios Padre celestial. <span class="response">Ten misericordia de nosotros.</span></p>
+                <p>Dios Hijo, Redentor del mundo. <span class="response">Ten misericordia de nosotros.</span></p>
+                <p>Dios Espíritu Santo. <span class="response">Ten misericordia de nosotros.</span></p>
+                <p>Trinidad Santa, un solo Dios.</p>
+                <br>
+                <p>Santa María, <span class="response">Ruega por nosotros</span></p>
+                <p>Santa Madre de Dios, <span class="response">Ruega por nosotros</span></p>
+                <p>Santa Virgen de las Vírgenes, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre de Cristo, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre de la Iglesia, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre de la Misericordia, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre de la divina gracia, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre de la Esperanza, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre purísima, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre castísima, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre siempre virgen, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre inmaculada, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre amable, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre admirable, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre del buen consejo, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre del Creador, <span class="response">Ruega por nosotros</span></p>
+                <p>Madre del Salvador, <span class="response">Ruega por nosotros</span></p>
+                <p>Virgen prudentísima, <span class="response">Ruega por nosotros</span></p>
+                <p>Virgen digna de veneración, <span class="response">Ruega por nosotros</span></p>
+                <p>Virgen digna de alabanza, <span class="response">Ruega por nosotros</span></p>
+                <p>Virgen poderosa, <span class="response">Ruega por nosotros</span></p>
+                <p>Virgen clemente, <span class="response">Ruega por nosotros</span></p>
+                <p>Virgen fiel, <span class="response">Ruega por nosotros</span></p>
+                <p>Espejo de justicia, <span class="response">Ruega por nosotros</span></p>
+                <p>Trono de la sabiduría, <span class="response">Ruega por nosotros</span></p>
+                <p>Causa de nuestra alegría, <span class="response">Ruega por nosotros</span></p>
+                <p>Vaso espiritual, <span class="response">Ruega por nosotros</span></p>
+                <p>Vaso digno de honor, <span class="response">Ruega por nosotros</span></p>
+                <p>Vaso insigne de devoción, <span class="response">Ruega por nosotros</span></p>
+                <p>Rosa mística, <span class="response">Ruega por nosotros</span></p>
+                <p>Torre de David, <span class="response">Ruega por nosotros</span></p>
+                <p>Torre de marfil, <span class="response">Ruega por nosotros</span></p>
+                <p>Casa de oro, <span class="response">Ruega por nosotros</span></p>
+                <p>Arca de la Alianza, <span class="response">Ruega por nosotros</span></p>
+                <p>Puerta del cielo, <span class="response">Ruega por nosotros</span></p>
+                <p>Estrella de la mañana, <span class="response">Ruega por nosotros</span></p>
+                <p>Salud de los enfermos, <span class="response">Ruega por nosotros</span></p>
+                <p>Refugio de los pecadores, <span class="response">Ruega por nosotros</span></p>
+                <p>Consuelo de los migrantes, <span class="response">Ruega por nosotros</span></p>
+                <p>Consoladora de los afligidos, <span class="response">Ruega por nosotros</span></p>
+                <p>Auxilio de los cristianos, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de los Ángeles, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de los Patriarcas, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de los Profetas, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de los Apóstoles, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de los Mártires, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de los Confesores, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de las Vírgenes, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de todos los Santos, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina concebida sin pecado original, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina asunta a los Cielos, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina del Santo Rosario, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de la familia, <span class="response">Ruega por nosotros</span></p>
+                <p>Reina de la paz, <span class="response">Ruega por nosotros</span></p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- CORDERO DE DIOS -->
+        <div class="prayer-section">
+            <h4>Cordero de Dios</h4>
+            <div class="prayer-text">
+                <p>Cordero de Dios, que quitas el pecado del mundo. <span class="response">Perdónanos, Señor.</span></p>
+                <p>Cordero de Dios, que quitas el pecado del mundo. <span class="response">Escúchanos, Señor.</span></p>
+                <p>Cordero de Dios, que quitas el pecado del mundo. <span class="response">Ten piedad de nosotros.</span></p>
+                <br>
+                <p>Ruega por nosotros, Santa Madre de Dios.</p>
+                <p class="response">Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- ORACIÓN FINAL -->
+        <div class="prayer-section">
+            <h4>Oración</h4>
+            <div class="prayer-text">
+                <p>Te pedimos, Señor, nos concedas a nosotros tus siervos, gozar de perpetua salud de alma y cuerpo, y por la gloriosa intercesión de la bienaventurada siempre Virgen María, seamos librados de las tristezas presentes y gocemos de la eterna alegría. Por Jesucristo, nuestro Señor. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- POR LAS INTENCIONES DEL SANTO PADRE -->
+        <h2>Por las intenciones del Santo Padre</h2>
+        <div class="prayer-section">
+            <h4>Padrenuestro</h4>
+            <div class="prayer-text">
+                <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.</p>
+                <p>Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Avemaría</h4>
+            <div class="prayer-text">
+                <p>Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.</p>
+                <p>Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <div class="prayer-section">
+            <h4>Gloria</h4>
+            <div class="prayer-text">
+                <p>Gloria al Padre y al Hijo y al Espíritu Santo.</p>
+                <p>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- UNA SALVE A LA VIRGEN -->
+        <div class="prayer-section">
+            <h4>Una Salve a la Virgen</h4>
+            <div class="prayer-text">
+                <p><strong>Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A Ti llamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando, en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clementísima, oh piadosa, oh dulce Virgen María!</strong></p>
+                <br>
+                <p>Ruega por nosotros, Santa Madre de Dios.</p>
+                <p>Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- JACULATORIA FINAL -->
+        <div class="prayer-section">
+            <h4>Jaculatoria final</h4>
+            <div class="prayer-text">
+                <p><strong>Ave María Purísima.</strong></p>
+                <p class="response">Sin pecado concebida.</p>
+            </div>
+            <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+        </div>
+
+        <!-- CITAS INSPIRADORAS -->
+        <h2>Citas sobre el Santo Rosario</h2>
+        
+        <div class="quote-box">
+            <p>"El Rosario me ha acompañado en los momentos de alegría y en los de tribulación. A él he confiado tantas preocupaciones y en él siempre he encontrado consuelo".</p>
+            <p class="quote-author">- San Juan Pablo II</p>
+        </div>
+
+        <div class="quote-box">
+            <p>"No encuentro otro medio más poderoso para atraer sobre nosotros el Reino de Dios, la Sabiduría eterna, que unir a la oración vocal la oración mental, rezando el Santo Rosario y meditando sus misterios".</p>
+            <p class="quote-author">- San Luis María Grignión de Montfort</p>
+        </div>
+
+        <div class="quote-box">
+            <p>"Rezad el Rosario todos los días para alcanzar la paz del mundo y el fin de la guerra".</p>
+            <p class="quote-author">- Virgen de Fátima, tercera aparición 13 de Julio de 1917</p>
+        </div>
+
+        <div class="quote-box">
+            <p>"Aférrate al Rosario como las hojas de la hiedra se aferran al árbol; porque sin nuestra Señora no podemos permanecer".</p>
+            <p class="quote-author">- Santa Teresa de Calcuta</p>
+        </div>
+
+        <div class="quote-box">
+            <p>"El santo Rosario es el remedio más conveniente y eficaz para obtener la ayuda materna de la Virgen".</p>
+            <p class="quote-author">- Papa Pío XII</p>
+        </div>
+
+        <div class="quote-box">
+            <p>"¡Amen a la Virgen y háganla amar. Reciten siempre el Rosario!"</p>
+            <p class="quote-author">- Padre Pío de Pietrelcina</p>
+        </div>
+
+    </div>
+
+    <script>
+        function markCompleted(button) {
+            button.classList.add('completed');
+            button.disabled = true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cómo rezar el Santo Rosario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        h4 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .prayer-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .prayer-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .prayer-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .prayer-button:active {
+            transform: translateY(0);
+        }
+        
+        .prayer-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 10px;
+        }
+        
+        .mystery-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .intro-text {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+        
+        .completed {
+            opacity: 0.6;
+            background: #e8f5e9;
+        }
+        
+        .response {
+            font-style: italic;
+            color: #666;
+            margin-left: 20px;
+        }
+        
+        .quote-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        
+        .quote-box p {
+            font-style: italic;
+            color: #1976d2;
+        }
+        
+        .quote-author {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cómo rezar el Santo Rosario</h1>
+        
+        <p class="intro-text">Sigue paso a paso cada oración y pulsa en el icono al terminarla.</p>
+        
+        <div class="quote-box">
+            <p>El Santo Rosario es una devoción recomendada por muchos Papas y santos. La misma Virgen pidió que se rezase en Lourdes y Fátima.</p>
+        </div>
+
+        <div id="rosario-content"></div>
+
+        <h2>Citas sobre el Santo Rosario</h2>
+        <div id="quotes-content"></div>
+    </div>
+
+    <script>
+        // ALMACENAMIENTO DE TODAS LAS ORACIONES
+        const oraciones = {
+            inicio: "Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor Dios Nuestro. En el nombre del Padre, del Hijo y del Espíritu Santo. Amén.",
+            
+            bajoTuAmparo: "Bajo tu amparo nos acogemos, santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh siempre Virgen, gloriosa y bendita!",
+            
+            actoContricion: "Señor mío Jesucristo, Dios y hombre verdadero, Creador, Padre y Redentor mío. Por ser Tú quién eres, Bondad infinita, y porque te amo sobre todas las cosas, me pesa de todo corazón haberte ofendido. También me pesa que puedes castigarme con las penas del infierno. Ayudado de tu divina gracia propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén.",
+            
+            invocaciones: {
+                linea1: "Señor, ábreme los labios.",
+                respuesta1: "Y mi boca proclamará tu alabanza.",
+                linea2: "Dios mío, ven en mi auxilio.",
+                respuesta2: "Señor, date prisa en socorrerme.",
+                linea3: "Gloria al Padre y al Hijo y al Espíritu Santo.",
+                respuesta3: "Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén."
+            },
+            
+            padrenuestro: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.",
+            
+            avemaria: "Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.",
+            
+            gloria: "Gloria al Padre y al Hijo y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.",
+            
+            ohJesus: "Oh Jesús mío, perdona nuestros pecados. Líbranos del fuego del infierno, lleva a todas las almas al cielo, especialmente a las más necesitadas. Y envíanos santas vocaciones",
+            
+            cordero: {
+                linea1: "Cordero de Dios, que quitas el pecado del mundo.",
+                respuesta1: "Perdónanos, Señor.",
+                linea2: "Cordero de Dios, que quitas el pecado del mundo.",
+                respuesta2: "Escúchanos, Señor.",
+                linea3: "Cordero de Dios, que quitas el pecado del mundo.",
+                respuesta3: "Ten piedad de nosotros.",
+                linea4: "Ruega por nosotros, Santa Madre de Dios.",
+                respuesta4: "Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén."
+            },
+            
+            oracionFinal: "Te pedimos, Señor, nos concedas a nosotros tus siervos, gozar de perpetua salud de alma y cuerpo, y por la gloriosa intercesión de la bienaventurada siempre Virgen María, seamos librados de las tristezas presentes y gocemos de la eterna alegría. Por Jesucristo, nuestro Señor. Amén.",
+            
+            salve: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A Ti llamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando, en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clementísima, oh piadosa, oh dulce Virgen María! Ruega por nosotros, Santa Madre de Dios. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.",
+            
+            jaculatoria: {
+                linea: "Ave María Purísima.",
+                respuesta: "Sin pecado concebida."
+            }
+        };
+
+        // MISTERIOS DEL ROSARIO
+        const misterios = [
+            {
+                gozosos: "La Encarnación del Hijo de Dios",
+                gloriosos: "La Resurrección del Hijo de Dios",
+                dolorosos: "La Oración de Jesús en el huerto",
+                luminosos: "El Bautismo de Jesús en el Jordán"
+            },
+            {
+                gozosos: "La Visitación de Nuestra Señora a su prima santa Isabel",
+                gloriosos: "La Ascensión del Señor a los Cielos",
+                dolorosos: "La Flagelación del Señor",
+                luminosos: "La autorrevelación de Jesús en las bodas de Caná"
+            },
+            {
+                gozosos: "El Nacimiento del Hijo de Dios",
+                gloriosos: "La Venida del Espíritu Santo sobre los Apóstoles",
+                dolorosos: "La Coronación de espinas",
+                luminosos: "El anuncio del Reino de Dios invitando a la conversión"
+            },
+            {
+                gozosos: "La Presentación de Jesús en el templo",
+                gloriosos: "La Asunción de nuestra Señora a los Cielos",
+                dolorosos: "Jesús con la Cruz a cuestas, camino del Calvario",
+                luminosos: "La Transfiguración"
+            },
+            {
+                gozosos: "El Niño Jesús perdido y hallado en el templo",
+                gloriosos: "La Coronación de la Santísima Virgen como Reina de Cielos y Tierra",
+                dolorosos: "La Crucifixión y Muerte de nuestro Señor",
+                luminosos: "La Institución de la Eucaristía"
+            }
+        ];
+
+        // LETANÍAS
+        const letanias = [
+            "Señor, ten piedad",
+            "Cristo, ten piedad",
+            "Señor, ten piedad",
+            "Cristo, óyenos",
+            "Cristo, escúchanos"
+        ];
+
+        const invocaciones = [
+            "Dios Padre celestial",
+            "Dios Hijo, Redentor del mundo",
+            "Dios Espíritu Santo",
+            "Trinidad Santa, un solo Dios",
+            "Santa María",
+            "Santa Madre de Dios",
+            "Santa Virgen de las Vírgenes",
+            "Madre de Cristo",
+            "Madre de la Iglesia",
+            "Madre de la Misericordia",
+            "Madre de la divina gracia",
+            "Madre de la Esperanza",
+            "Madre purísima",
+            "Madre castísima",
+            "Madre siempre virgen",
+            "Madre inmaculada",
+            "Madre amable",
+            "Madre admirable",
+            "Madre del buen consejo",
+            "Madre del Creador",
+            "Madre del Salvador",
+            "Virgen prudentísima",
+            "Virgen digna de veneración",
+            "Virgen digna de alabanza",
+            "Virgen poderosa",
+            "Virgen clemente",
+            "Virgen fiel",
+            "Espejo de justicia",
+            "Trono de la sabiduría",
+            "Causa de nuestra alegría",
+            "Vaso espiritual",
+            "Vaso digno de honor",
+            "Vaso insigne de devoción",
+            "Rosa mística",
+            "Torre de David",
+            "Torre de marfil",
+            "Casa de oro",
+            "Arca de la Alianza",
+            "Puerta del cielo",
+            "Estrella de la mañana",
+            "Salud de los enfermos",
+            "Refugio de los pecadores",
+            "Consuelo de los migrantes",
+            "Consoladora de los afligidos",
+            "Auxilio de los cristianos",
+            "Reina de los Ángeles",
+            "Reina de los Patriarcas",
+            "Reina de los Profetas",
+            "Reina de los Apóstoles",
+            "Reina de los Mártires",
+            "Reina de los Confesores",
+            "Reina de las Vírgenes",
+            "Reina de todos los Santos",
+            "Reina concebida sin pecado original",
+            "Reina asunta a los Cielos",
+            "Reina del Santo Rosario",
+            "Reina de la familia",
+            "Reina de la paz"
+        ];
+
+        // CITAS
+        const citas = [
+            {
+                texto: "El Rosario me ha acompañado en los momentos de alegría y en los de tribulación. A él he confiado tantas preocupaciones y en él siempre he encontrado consuelo.",
+                autor: "San Juan Pablo II"
+            },
+            {
+                texto: "No encuentro otro medio más poderoso para atraer sobre nosotros el Reino de Dios, la Sabiduría eterna, que unir a la oración vocal la oración mental, rezando el Santo Rosario y meditando sus misterios.",
+                autor: "San Luis María Grignión de Montfort"
+            },
+            {
+                texto: "Rezad el Rosario todos los días para alcanzar la paz del mundo y el fin de la guerra.",
+                autor: "Virgen de Fátima, tercera aparición 13 de Julio de 1917"
+            },
+            {
+                texto: "Aférrate al Rosario como las hojas de la hiedra se aferran al árbol; porque sin nuestra Señora no podemos permanecer.",
+                autor: "Santa Teresa de Calcuta"
+            },
+            {
+                texto: "El santo Rosario es el remedio más conveniente y eficaz para obtener la ayuda materna de la Virgen.",
+                autor: "Papa Pío XII"
+            },
+            {
+                texto: "¡Amen a la Virgen y háganla amar. Reciten siempre el Rosario!",
+                autor: "Padre Pío de Pietrelcina"
+            }
+        ];
+
+        // FUNCIONES PARA GENERAR HTML
+        function crearSeccionOracion(titulo, texto, botonTexto = "✓ Completar") {
+            return `
+                <div class="prayer-section">
+                    <h4>${titulo}</h4>
+                    <div class="prayer-text">
+                        <p>${texto}</p>
+                    </div>
+                    <button class="prayer-button" onclick="markCompleted(this)">${botonTexto}</button>
+                </div>
+            `;
+        }
+
+        function crearSeccionInvocaciones(datos) {
+            return `
+                <div class="prayer-section">
+                    <h4>Invocaciones iniciales</h4>
+                    <div class="prayer-text">
+                        <p>${datos.linea1}</p>
+                        <p class="response">${datos.respuesta1}</p>
+                        <br>
+                        <p>${datos.linea2}</p>
+                        <p class="response">${datos.respuesta2}</p>
+                        <br>
+                        <p>${datos.linea3}</p>
+                        <p class="response">${datos.respuesta3}</p>
+                    </div>
+                    <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+                </div>
+            `;
+        }
+
+        function crearMisterio(numero, misterio) {
+            const numeroTexto = ["Primer", "Segundo", "Tercer", "Cuarto", "Quinto"];
+            return `
+                <h2>${numeroTexto[numero]} Misterio</h2>
+                <div class="mystery-box">
+                    <p><strong>Gozosos (lunes y sábado):</strong> ${misterio.gozosos}</p>
+                    <p><strong>Gloriosos (miércoles y domingo):</strong> ${misterio.gloriosos}</p>
+                    <p><strong>Dolorosos (martes y viernes):</strong> ${misterio.dolorosos}</p>
+                    <p><strong>Luminosos (jueves):</strong> ${misterio.luminosos}</p>
+                </div>
+                ${crearSeccionOracion("Padrenuestro", oraciones.padrenuestro)}
+                ${crear10Avemarias()}
+                ${crearSeccionOracion("Gloria", oraciones.gloria)}
+                ${crearSeccionOracion("Oh, Jesús Mío", oraciones.ohJesus)}
+            `;
+        }
+
+        function crear10Avemarias() {
+            let botones = '';
+            for (let i = 1; i <= 10; i++) {
+                botones += `<button class="prayer-button" onclick="markCompleted(this)">${i}</button>`;
+            }
+            return `
+                <div class="prayer-section">
+                    <h4>10 Avemarías</h4>
+                    <div class="prayer-text">
+                        <p>${oraciones.avemaria}</p>
+                    </div>
+                    ${botones}
+                </div>
+            `;
+        }
+
+        function crearLetanias() {
+            let html = `<h2>Letanías de la Santísima Virgen</h2><div class="prayer-section"><div class="prayer-text">`;
+            
+            letanias.forEach(linea => {
+                html += `<p>${linea}</p>`;
+            });
+            
+            html += `<br>`;
+            
+            for (let i = 0; i < 3; i++) {
+                html += `<p>${invocaciones[i]} <span class="response">Ten misericordia de nosotros.</span></p>`;
+            }
+            
+            html += `<p>${invocaciones[3]}</p><br>`;
+            
+            for (let i = 4; i < invocaciones.length; i++) {
+                html += `<p>${invocaciones[i]}, <span class="response">Ruega por nosotros</span></p>`;
+            }
+            
+            html += `</div><button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button></div>`;
+            return html;
+        }
+
+        function crearCordero() {
+            return `
+                <div class="prayer-section">
+                    <h4>Cordero de Dios</h4>
+                    <div class="prayer-text">
+                        <p>${oraciones.cordero.linea1} <span class="response">${oraciones.cordero.respuesta1}</span></p>
+                        <p>${oraciones.cordero.linea2} <span class="response">${oraciones.cordero.respuesta2}</span></p>
+                        <p>${oraciones.cordero.linea3} <span class="response">${oraciones.cordero.respuesta3}</span></p>
+                        <br>
+                        <p>${oraciones.cordero.linea4}</p>
+                        <p class="response">${oraciones.cordero.respuesta4}</p>
+                    </div>
+                    <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+                </div>
+            `;
+        }
+
+        function crearJaculatoria() {
+            return `
+                <div class="prayer-section">
+                    <h4>Jaculatoria final</h4>
+                    <div class="prayer-text">
+                        <p><strong>${oraciones.jaculatoria.linea}</strong></p>
+                        <p class="response">${oraciones.jaculatoria.respuesta}</p>
+                    </div>
+                    <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
+                </div>
+            `;
+        }
+
+        // GENERAR TODO EL CONTENIDO DEL ROSARIO
+        function generarRosario() {
+            let html = '';
+            
+            // Oraciones iniciales
+            html += crearSeccionOracion("Inicio", oraciones.inicio);
+            html += crearSeccionOracion("Bajo tu amparo", oraciones.bajoTuAmparo);
+            /* html += crearSeccionOracion("Acto de contrición", oraciones.actoContricion); */
+            html += crearSeccionInvocaciones(oraciones.invocaciones);
+            
+            // Cinco misterios
+            misterios.forEach((misterio, index) => {
+                html += crearMisterio(index, misterio);
+            });
+            
+            // Letanías y oraciones finales
+            html += crearLetanias();
+            html += crearCordero();
+            html += crearSeccionOracion("Oración", oraciones.oracionFinal);
+            html += `<h2>Por las intenciones del Santo Padre</h2>`;
+            html += crearSeccionOracion("Padrenuestro", oraciones.padrenuestro);
+            html += crearSeccionOracion("Avemaría", oraciones.avemaria);
+            html += crearSeccionOracion("Gloria", oraciones.gloria);
+            html += `<div class="prayer-section"><h4>Una Salve a la Virgen</h4><div class="prayer-text"><p><strong>${oraciones.salve}</strong></p></div><button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button></div>`;
+            html += crearJaculatoria();
+            
+            return html;
+        }
+
+        function generarCitas() {
+            return citas.map(cita => `
+                <div class="quote-box">
+                    <p>"${cita.texto}".</p>
+                    <p class="quote-author">- ${cita.autor}</p>
+                </div>
+            `).join('');
+        }
+
+        // Función para marcar como completado
+        function markCompleted(button) {
+            button.classList.add('completed');
+            button.disabled = true;
+        }
+
+        // INICIALIZAR LA APLICACIÓN
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('rosario-content').innerHTML = generarRosario();
+            document.getElementById('quotes-content').innerHTML = generarCitas();
+        });
+    </script>
+</body>
+</html>
