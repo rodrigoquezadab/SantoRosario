@@ -133,21 +133,6 @@
             font-weight: bold;
             margin-top: 10px;
         }
-        
-        .optional-section {
-            background: #fff3e0;
-            border-left: 5px solid #ff9800;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 5px;
-        }
-        
-        .optional-header {
-            color: #f57c00;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
@@ -172,6 +157,8 @@
             inicio: "Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor Dios Nuestro. En el nombre del Padre, del Hijo y del Espíritu Santo. Amén.",
             
             bajoTuAmparo: "Bajo tu amparo nos acogemos, santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh siempre Virgen, gloriosa y bendita!",
+            
+            actoContricion: "Señor mío, Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío, por ser Vos quien sois y porque os amo sobre todas las cosas, me pesa de todo corazón haberos ofendido; propongo firmemente nunca más pecar, apartarme de todas las ocasiones de ofenderos, confesarme y, cumplir la penitencia que me fuera impuesta. Ofrezco, Señor, mi vida, obras y trabajos, en satisfacción de todos mis pecados, y, así como lo suplico, así confío en vuestra bondad y misericordia infinita, que los perdonareis, por los méritos de vuestra preciosísima sangre, pasión y muerte, y me daréis gracia para enmendarme, y perseverar en vuestro santo amor y servicio, hasta el fin de mi vida. Amén.",
             
             invocaciones: {
                 linea1: "Señor, ábreme los labios.",
@@ -408,22 +395,6 @@
             `;
         }
 
-        function crear3Avemarias() {
-            let botones = '';
-            for (let i = 1; i <= 3; i++) {
-                botones += `<button class="prayer-button" onclick="markCompleted(this)">${i}</button>`;
-            }
-            return `
-                <div class="prayer-section">
-                    <h4>3 Avemarías</h4>
-                    <div class="prayer-text">
-                        <p>${oraciones.avemaria}</p>
-                    </div>
-                    ${botones}
-                </div>
-            `;
-        }
-
         function crearLetanias() {
             let html = `<h2>Letanías de la Santísima Virgen</h2><div class="prayer-section"><div class="prayer-text">`;
             
@@ -481,9 +452,10 @@
         function generarRosario() {
             let html = '';
             
-            // Oraciones iniciales (SIN acto de contrición)
+            // Oraciones iniciales
             html += crearSeccionOracion("Inicio", oraciones.inicio);
             html += crearSeccionOracion("Bajo tu amparo", oraciones.bajoTuAmparo);
+            html += crearSeccionOracion("Acto de contrición", oraciones.actoContricion);
             html += crearSeccionInvocaciones(oraciones.invocaciones);
             
             // Cinco misterios
@@ -491,29 +463,16 @@
                 html += crearMisterio(index, misterio);
             });
             
-            // Después del quinto misterio: Salve y Jaculatoria
-            html += `<div class="prayer-section"><h4>Salve a la Virgen</h4><div class="prayer-text"><p><strong>${oraciones.salve}</strong></p></div><button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button></div>`;
-            html += crearJaculatoria();
-            
-            // Por las intenciones del Santo Padre
-            html += `<h2>Por las intenciones del Santo Padre</h2>`;
-            html += crearSeccionOracion("Padrenuestro", oraciones.padrenuestro);
-            html += crear3Avemarias();
-            html += crearSeccionOracion("Gloria", oraciones.gloria);
-            
-            // Sección opcional al final
-            html += `
-                <div class="optional-section">
-                    <div class="optional-header">📿 Oraciones opcionales</div>
-                    <p style="margin-bottom: 20px; color: #666;">Las siguientes oraciones son opcionales y pueden rezarse al final del Rosario:</p>
-            `;
-            
-            // Letanías, Cordero y Oración final como opcionales
+            // Letanías y oraciones finales
             html += crearLetanias();
             html += crearCordero();
             html += crearSeccionOracion("Oración", oraciones.oracionFinal);
-            
-            html += `</div>`; // Cierre de optional-section
+            html += `<h2>Por las intenciones del Santo Padre</h2>`;
+            html += crearSeccionOracion("Padrenuestro", oraciones.padrenuestro);
+            html += crearSeccionOracion("Avemaría", oraciones.avemaria);
+            html += crearSeccionOracion("Gloria", oraciones.gloria);
+            html += `<div class="prayer-section"><h4>Salve a la Virgen</h4><div class="prayer-text"><p><strong>${oraciones.salve}</strong></p></div><button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button></div>`;
+            html += crearJaculatoria();
             
             return html;
         }
