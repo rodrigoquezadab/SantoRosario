@@ -9,7 +9,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -68,29 +67,17 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 1em;
-            transition: background 0.3s, opacity 0.3s;
+            transition: all 0.3s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-user-select: none;
         }
         
-        /* Eliminar efectos hover en dispositivos táctiles */
-        @media (hover: hover) and (pointer: fine) {
-            .prayer-button:hover:not(.completed):not(:disabled) {
-                background: #764ba2;
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            }
+        .prayer-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
         
-        .prayer-button:focus {
-            outline: none;
-        }
-        
-        .prayer-button:active:not(.completed):not(:disabled) {
+        .prayer-button:active {
             transform: translateY(0);
         }
         
@@ -118,11 +105,8 @@
         }
         
         .completed {
-            opacity: 0.6 !important;
-            background: #e8f5e9 !important;
-            cursor: default !important;
-            pointer-events: none;
-            transform: none !important;
+            opacity: 0.6;
+            background: #e8f5e9;
         }
         
         .response {
@@ -572,22 +556,10 @@
         }
 
 
-        // Función para marcar como completado (mejorada para móviles)
+        // Función para marcar como completado
         function markCompleted(button) {
-            // Prevenir comportamiento si ya está completado
-            if (button.classList.contains('completed')) {
-                return;
-            }
-            
-            // Agregar clase y deshabilitar inmediatamente
             button.classList.add('completed');
             button.disabled = true;
-            
-            // Remover el foco del botón (importante para móviles)
-            button.blur();
-            
-            // Forzar repintado para dispositivos móviles
-            void button.offsetWidth;
         }
 
 
