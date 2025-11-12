@@ -172,36 +172,6 @@
             font-weight: bold;
             margin-bottom: 15px;
         }
-        
-        .optional-index {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .optional-index ul {
-            list-style: none;
-            padding: 0;
-            margin: 10px 0 0 0;
-        }
-        
-        .optional-index li {
-            margin: 8px 0;
-        }
-        
-        .optional-index a {
-            color: #f57c00;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .optional-index a:hover {
-            color: #e65100;
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -517,7 +487,7 @@
 
 
         function crearLetanias() {
-            let html = `<h2 id="letanias">Letanías de la Santísima Virgen</h2><div class="prayer-section"><div class="prayer-text">`;
+            let html = `<h2>Letanías de la Santísima Virgen</h2><div class="prayer-section"><div class="prayer-text">`;
             
             letanias.forEach(linea => {
                 html += `<p>${linea}</p>`;
@@ -543,7 +513,7 @@
 
         function crearCordero() {
             return `
-                <div class="prayer-section" id="cordero">
+                <div class="prayer-section">
                     <h4>Cordero de Dios</h4>
                     <div class="prayer-text">
                         <p>${oraciones.cordero.linea1} <span class="response">${oraciones.cordero.respuesta1}</span></p>
@@ -604,25 +574,15 @@
                 <div class="optional-section">
                     <div class="optional-header">📿 Oraciones opcionales</div>
                     <p style="margin-bottom: 20px; color: #666;">Las siguientes oraciones son opcionales y pueden rezarse al final del Rosario:</p>
-                    
-                    <div class="optional-index">
-                        <strong>Índice de oraciones:</strong>
-                        <ul>
-                            <li><a href="#letanias">→ Letanías de la Santísima Virgen</a></li>
-                            <li><a href="#cordero">→ Cordero de Dios</a></li>
-                            <li><a href="#oracion-final">→ Oración final</a></li>
-                            <li><a href="#mes-maria">→ Oraciones del Mes de María</a></li>
-                        </ul>
-                    </div>
             `;
             
             // Letanías, Cordero y Oración final como opcionales
             html += crearLetanias();
             html += crearCordero();
-            html += `<div id="oracion-final">` + crearSeccionOracion("Oración final", oraciones.oracionFinal) + `</div>`;
+            html += crearSeccionOracion("Oración final", oraciones.oracionFinal);
             
             // Oraciones del Mes de María
-            html += `<h2 id="mes-maria" style="margin-top: 30px;">Oraciones del Mes de María</h2>`;
+            html += `<h2 style="margin-top: 30px;">Oraciones del Mes de María</h2>`;
             html += crearSeccionOracion("Oración inicial del Mes de María", oraciones.mesMaria.inicial);
             html += crearSeccionOracion("Oración final del Mes de María", oraciones.mesMaria.final);
             
