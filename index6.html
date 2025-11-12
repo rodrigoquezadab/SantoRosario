@@ -51,14 +51,6 @@
             font-size: 1.3em;
         }
         
-        .mystery-subtitle {
-            color: #888;
-            font-size: 0.9em;
-            font-style: italic;
-            margin-top: -5px;
-            margin-bottom: 10px;
-        }
-        
         .prayer-text {
             background: #f8f9fa;
             padding: 15px;
@@ -185,15 +177,12 @@
         </div>
 
 
-
         <div id="rosario-content"></div>
-
 
 
         <h2>Citas sobre el Santo Rosario</h2>
         <div id="quotes-content"></div>
     </div>
-
 
 
     <script>
@@ -219,8 +208,6 @@
             gloria: "+ Gloria al Padre y al Hijo y al Espíritu Santo. + Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.",
             
             ohJesus: "Oh Jesús mío, perdona nuestros pecados. Líbranos del fuego del infierno, lleva a todas las almas al cielo, socorre especialmente a las más necesitadas de tu misericordia. Y envíanos santas vocaciones.",
-            
-            santiguacion: "En el nombre del Padre, del Hijo y del Espíritu Santo. Amén.",
             
             cordero: {
                 linea1: "Cordero de Dios, que quitas el pecado del mundo.",
@@ -248,7 +235,6 @@
                 final: "Oh María, Madre de Jesús, nuestro Salvador y nuestra buena Madre. Nosotros venimos a ofrecerte con estos obsequios que colocamos a tus pies, nuestros corazones, deseosos de agradarte y a solicitar de tu bondad un nuevo ardor en tu santo servicio. Dígnate presentarnos a tu Divino Hijo, que en vista de sus méritos y a nombre de su Santa Madre, dirija nuestros pasos por el sendero de la virtud. Que haga lucir con nuevo esplendor la luz de la fe sobre los infortunados pueblos que gimen por tanto tiempo en las tinieblas del error; que vuelvan hacia Él y cambie tantos corazones rebeldes cuya penitencia regocijará su corazón y el tuyo. Que convierta a los enemigos de su Iglesia y que en fin encienda por todas partes el fuego de su ardiente caridad. Que nos colme de alegría, en medio de las tribulaciones de esta vida, y de esperanza para el porvenir. Amén."
             }
         };
-
 
 
         // MISTERIOS DEL ROSARIO
@@ -286,7 +272,6 @@
         ];
 
 
-
         // LETANÍAS
         const letanias = [
             "Señor, ten piedad",
@@ -295,7 +280,6 @@
             "Cristo, óyenos",
             "Cristo, escúchanos"
         ];
-
 
 
         const invocaciones = [
@@ -360,7 +344,6 @@
         ];
 
 
-
         // CITAS
         const citas = [
             {
@@ -390,13 +373,11 @@
         ];
 
 
-
         // FUNCIONES PARA GENERAR HTML
-        function crearSeccionOracion(titulo, texto, botonTexto = "✓ Completar", subtitulo = "") {
+        function crearSeccionOracion(titulo, texto, botonTexto = "✓ Completar") {
             return `
                 <div class="prayer-section">
                     <h4>${titulo}</h4>
-                    ${subtitulo ? `<div class="mystery-subtitle">${subtitulo}</div>` : ''}
                     <div class="prayer-text">
                         <p>${texto}</p>
                     </div>
@@ -404,7 +385,6 @@
                 </div>
             `;
         }
-
 
 
         function crearSeccionInvocaciones(datos) {
@@ -427,29 +407,25 @@
         }
 
 
-
         function crearMisterio(numero, misterio) {
             const numeroTexto = ["Primer", "Segundo", "Tercer", "Cuarto", "Quinto"];
-            const misterioActual = `${numeroTexto[numero]} Misterio`;
-            
             return `
-                <h2>${misterioActual}</h2>
+                <h2>${numeroTexto[numero]} Misterio</h2>
                 <div class="mystery-box">
                     <p><strong>-Gozosos (lunes y sábado):</strong> ${misterio.gozosos}</p>
                     <p><strong>-Luminosos (jueves):</strong> ${misterio.luminosos}</p>
                     <p><strong>-Dolorosos (martes y viernes):</strong> ${misterio.dolorosos}</p>
                     <p><strong>-Gloriosos (miércoles y domingo):</strong> ${misterio.gloriosos}</p>
                 </div>
-                ${crearSeccionOracion("Padrenuestro", oraciones.padrenuestro, "✓ Completar", misterioActual)}
-                ${crear10Avemarias(misterioActual)}
-                ${crearSeccionOracion("Gloria", oraciones.gloria, "✓ Completar", misterioActual)}
-                ${crearSeccionOracion("Oh, Jesús Mío", oraciones.ohJesus, "✓ Completar", misterioActual)}
+                ${crearSeccionOracion("Padrenuestro", oraciones.padrenuestro)}
+                ${crear10Avemarias()}
+                ${crearSeccionOracion("Gloria", oraciones.gloria)}
+                ${crearSeccionOracion("Oh, Jesús Mío", oraciones.ohJesus)}
             `;
         }
 
 
-
-        function crear10Avemarias(misterioActual = "") {
+        function crear10Avemarias() {
             let botones = '';
             for (let i = 1; i <= 10; i++) {
                 botones += `<button class="prayer-button" onclick="markCompleted(this)">${i}</button>`;
@@ -457,7 +433,6 @@
             return `
                 <div class="prayer-section">
                     <h4>10 Avemarías</h4>
-                    ${misterioActual ? `<div class="mystery-subtitle">${misterioActual}</div>` : ''}
                     <div class="prayer-text">
                         <p>${oraciones.avemaria}</p>
                     </div>
@@ -465,7 +440,6 @@
                 </div>
             `;
         }
-
 
 
         function crear3Avemarias() {
@@ -483,7 +457,6 @@
                 </div>
             `;
         }
-
 
 
         function crearLetanias() {
@@ -510,7 +483,6 @@
         }
 
 
-
         function crearCordero() {
             return `
                 <div class="prayer-section">
@@ -529,7 +501,6 @@
         }
 
 
-
         function crearJaculatoria() {
             return `
                 <div class="prayer-section">
@@ -542,7 +513,6 @@
                 </div>
             `;
         }
-
 
 
         // GENERAR TODO EL CONTENIDO DEL ROSARIO
@@ -567,7 +537,7 @@
             html += `<h2>Por las intenciones del Santo Padre</h2>`;
             html += crearSeccionOracion("Padrenuestro", oraciones.padrenuestro);
             html += crear3Avemarias();
-            html += crearSeccionOracion("Santiguación final", oraciones.santiguacion);
+            html += crearSeccionOracion("Gloria", oraciones.gloria);
             
             // Sección opcional al final
             html += `
@@ -592,7 +562,6 @@
         }
 
 
-
         function generarCitas() {
             return citas.map(cita => `
                 <div class="quote-box">
@@ -601,7 +570,6 @@
                 </div>
             `).join('');
         }
-
 
 
         // Función para marcar como completado (mejorada para móviles)
@@ -621,7 +589,6 @@
             // Forzar repintado para dispositivos móviles
             void button.offsetWidth;
         }
-
 
 
         // INICIALIZAR LA APLICACIÓN
