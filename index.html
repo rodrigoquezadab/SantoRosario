@@ -4,444 +4,591 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cómo rezar el Santo Rosario</title>
+    <meta name="description" content="Guía para rezar el Santo Rosario en comunidad, con los misterios del día, Guía y Asamblea.">
+    <meta name="theme-color" content="#34508c" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            color-scheme: light dark;
+            --fs: 18px;
+            --bg: #f3eee4;
+            --card: #fffdf9;
+            --surface: #f7f2ea;
+            --border: #e3dacb;
+            --text: #2b2926;
+            --muted: #5e584f;
+            --accent: #34508c;
+            --accent-strong: #263d6e;
+            --accent-soft: #e5eaf5;
+            --on-accent: #ffffff;
+            --gold: #9a7a2c;
+            --gold-soft: #f6eedb;
+            --guia: #d32f2f;        /* + rojo: Guía */
+            --asamblea: #667eea;    /* + azul: Asamblea */
+            --done-bg: #e3f2e7;
+            --done-fg: #1e6b34;
+            --focus: #f0a500;
+            --shadow: 0 1px 2px rgba(40, 30, 10, .06), 0 4px 14px rgba(40, 30, 10, .06);
         }
-        
-        body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 30px 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        h1 {
-            text-align: center;
-            color: #764ba2;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-        }
-        
-        h2 {
-            color: #667eea;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-        
-        h4 {
-            color: #764ba2;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            font-size: 1.3em;
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #14161b;
+                --card: #1d2027;
+                --surface: #252932;
+                --border: #353a46;
+                --text: #ebe7df;
+                --muted: #b3ada2;
+                --accent: #8fa8e8;
+                --accent-strong: #b3c5f2;
+                --accent-soft: #283250;
+                --on-accent: #10131a;
+                --gold: #d6b45a;
+                --gold-soft: #2e2a1f;
+                --guia: #ff6b6b;
+                --asamblea: #8c9cff;
+                --done-bg: #1c3626;
+                --done-fg: #8fd8a4;
+                --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .25);
+            }
         }
 
-        /* Controles de selección de Misterios */
-        .mystery-selection-controls {
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html { font-size: var(--fs); scroll-behavior: smooth; }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        button { font-family: inherit; font-size: inherit; color: inherit; }
+        :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+        /* ---------- Barra superior fija ---------- */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: color-mix(in srgb, var(--card) 92%, transparent);
+            backdrop-filter: saturate(1.4) blur(8px);
+            -webkit-backdrop-filter: saturate(1.4) blur(8px);
+            border-bottom: 1px solid var(--border);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-size: 15px;
+        }
+        .topbar-row {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            white-space: nowrap;
+            padding: 4px 2px;
+        }
+        .brand-icon { font-size: 1.25em; }
+        .progress-label {
+            flex: 1;
+            min-width: 0;
+            background: none;
+            border: none;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tool-btn {
+            min-width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .tool-btn:hover { border-color: var(--accent); }
+        .chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-top: 0;
+        }
+        .chips::-webkit-scrollbar { display: none; }
+        .chip {
+            flex: none;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 13.5px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .chip:hover { border-color: var(--accent); color: var(--accent); }
+        .progress-bar { height: 4px; background: var(--border); }
+        .progress-bar > div { height: 100%; width: 0; background: var(--gold); transition: width .4s ease; }
+        @media (max-width: 420px) {
+            .brand-text { display: none; }
+        }
+
+        /* ---------- Contenedor ---------- */
+        .container {
+            max-width: 760px;
+            margin: 16px auto 40px;
+            background: var(--card);
+            border-radius: 16px;
+            padding: 28px 20px;
+            box-shadow: var(--shadow);
+        }
+        @media (max-width: 600px) {
+            .container { margin: 0; border-radius: 0; padding: 22px 14px; box-shadow: none; }
+        }
+
+        [id] { scroll-margin-top: 104px; }
+
+        h1 { text-align: center; margin-bottom: 18px; font-size: 2.1em; line-height: 1.2; }
+        h1 a { color: var(--accent); text-decoration: none; }
+        h1 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+
+        h2 {
+            color: var(--accent);
+            margin-top: 36px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            font-size: 1.35em;
+            line-height: 1.3;
+        }
+        h4 { color: var(--accent-strong); margin-bottom: 8px; font-size: 1.15em; }
+
+        p + p { margin-top: .4em; }
+
+        .intro-text { margin-bottom: 14px; }
+
+        /* Leyenda Guía / Asamblea */
+        .legend {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #e9eef6;
+            gap: 8px 16px;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            font-size: .92em;
+        }
+        .legend-note { flex-basis: 100%; color: var(--muted); font-size: .92em; }
+
+        .red-plus, .default-plus { font-weight: bold; margin-right: 4px; }
+        .red-plus { color: var(--guia); }
+        .default-plus { color: var(--asamblea); }
+        .rol {
+            display: inline-block;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-size: .68em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: .15em .5em;
+            border-radius: 4px;
+            margin-right: .45em;
+            vertical-align: .15em;
+            line-height: 1.3;
+        }
+        .rol-guia { color: var(--guia); background: color-mix(in srgb, var(--guia) 13%, transparent); }
+        .rol-asamblea { color: var(--asamblea); background: color-mix(in srgb, var(--asamblea) 15%, transparent); }
+
+        .notice {
+            background: var(--gold-soft);
+            border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+        .notice a { color: var(--gold); font-weight: 700; }
+
+        .quote-box {
+            background: var(--accent-soft);
+            border-left: 4px solid var(--accent);
+            padding: 16px 18px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+        .quote-box p { font-style: italic; }
+        .quote-author { text-align: right; font-weight: bold; font-style: normal !important; margin-top: 8px; color: var(--accent-strong); }
+
+        /* ---------- Selector de misterios ---------- */
+        .mystery-selection-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
         }
         .mystery-type-button {
-            flex: 1 1 auto;
-            max-width: 200px;
-            background: #764ba2;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            position: relative;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 12px 10px;
             cursor: pointer;
-            font-size: 0.9em; 
-            transition: background 0.3s;
+            text-align: center;
+            transition: border-color .2s, background .2s;
+            line-height: 1.3;
         }
-        .mystery-type-button:hover {
-            background: #5a3875;
+        .mystery-type-button:hover { border-color: var(--accent); }
+        .mystery-type-button .mt-name { display: block; font-weight: 700; color: var(--accent-strong); }
+        .mystery-type-button .mt-days { display: block; font-size: .8em; color: var(--muted); margin-top: 2px; }
+        .mystery-type-button.active { border-color: var(--accent); background: var(--accent); }
+        .mystery-type-button.active .mt-name,
+        .mystery-type-button.active .mt-days { color: var(--on-accent); }
+        .badge-hoy {
+            position: absolute;
+            top: -9px;
+            right: 8px;
+            background: var(--gold);
+            color: #fff;
+            font: 700 11px/1 system-ui, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: 4px 7px;
+            border-radius: 999px;
         }
-        .mystery-type-button.active {
-            background: #667eea;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
+        .rosario-del-dia { text-align: center; margin: 18px 0 6px; color: var(--muted); font-style: italic; }
+        .rosario-del-dia strong { display: block; color: var(--accent); font-style: normal; font-size: 1.1em; letter-spacing: .03em; }
 
-        /* Estilo para el título del Misterio que se puede hacer clic (Collapse Header) */
-        .mystery-title-clickable {
-            cursor: pointer;
-            padding: 10px 15px;
-            background: #e6e9f0;
-            border-radius: 8px;
-            margin-top: 15px;
-            margin-bottom: 0; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s;
+        /* ---------- Secciones de oración ---------- */
+        .prayer-section {
+            margin: 14px 0;
+            padding: 16px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
         }
-        .mystery-title-clickable:hover {
-            background: #d4d7e0;
-        }
-        .mystery-title-clickable h4 {
-            margin: 0;
-            color: #764ba2;
-            flex-grow: 1;
-        }
-        .mystery-title-clickable span {
-            font-size: 1.5em;
-            color: #764ba2;
-            margin-left: 10px;
-            transition: transform 0.3s;
-        }
-        
-        .mystery-subtitle {
-            color: #888;
-            font-size: 0.9em;
-            font-style: italic;
-            margin-top: -5px;
-            margin-bottom: 10px;
-        }
-        
+        .prayer-section.is-done { border-color: color-mix(in srgb, var(--done-fg) 35%, transparent); }
+        .mystery-subtitle { color: var(--muted); font-size: .85em; font-style: italic; margin-top: -6px; margin-bottom: 8px; }
         .prayer-text {
-            background: #f8f9fa;
-            padding: 15px;
-            border-left: 4px solid #667eea;
-            margin: 15px 0;
-            border-radius: 5px;
+            background: var(--card);
+            padding: 12px 14px;
+            border-left: 4px solid var(--accent);
+            margin: 10px 0 12px;
+            border-radius: 6px;
         }
-        
-        /* Estilo para el pasaje bíblico desplegable (Collapse Body) */
-        .bible-passage {
-            display: none; /* Oculto por defecto */
-            background: #fff;
-            padding: 15px;
-            margin: 0 0 15px 0;
-            border: 1px solid #ddd;
-            border-radius: 0 0 8px 8px;
-            font-style: italic;
-            line-height: 1.5;
-            color: #555;
-            font-size: 0.95em;
-        }
-        .bible-passage p {
-            margin-bottom: 5px;
-        }
+        .parte + .parte { margin-top: .6em; }
+        .response { font-style: italic; color: var(--muted); margin-left: 20px; }
+        .gap { height: .6em; }
 
         .prayer-button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            margin: 10px 5px;
-            border-radius: 25px;
+            background: var(--accent);
+            color: var(--on-accent);
+            border: 2px solid var(--accent);
+            padding: 10px 22px;
+            border-radius: 999px;
             cursor: pointer;
-            font-size: 1em;
-            transition: background 0.3s, opacity 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
+            font-size: .95em;
+            font-weight: 600;
+            transition: background .2s, color .2s, border-color .2s, transform .1s;
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
         }
-        
-        /* Efectos de Hover y Active (mantienen el comportamiento original) */
         @media (hover: hover) and (pointer: fine) {
-            .prayer-button:hover:not(.completed):not(:disabled) {
-                background: #764ba2;
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            }
+            .prayer-button:hover:not(:disabled) { background: var(--accent-strong); border-color: var(--accent-strong); }
         }
-        
-        .prayer-button:focus {
-            outline: none;
+        .prayer-button:active:not(:disabled) { transform: scale(.97); }
+        .prayer-button.completed {
+            background: var(--done-bg);
+            color: var(--done-fg);
+            border-color: color-mix(in srgb, var(--done-fg) 40%, transparent);
         }
-        
-        .prayer-button:active:not(.completed):not(:disabled) {
-            transform: translateY(0);
-        }
-        
-        .prayer-section {
-            margin: 20px 0;
-            padding: 20px 0;
-            background: #fafbfc;
-            border-radius: 10px;
-        }
-        
-        /* ESTILO CORREGIDO: para botones ya completados */
-        .completed {
-            opacity: 0.6 !important;
-            background: #e8f5e9 !important; /* Color verde muy claro */
-            color: #4CAF50 !important; /* Texto verde para indicar éxito */
-            cursor: default !important;
-            pointer-events: none;
-            transform: none !important;
-            box-shadow: none !important;
-        }
+        .prayer-button:disabled { cursor: default; }
 
-        .response {
-            font-style: italic;
-            color: #666;
-            margin-left: 20px;
-        }
-        
-        .quote-box {
-            background: #e3f2fd;
-            border-left: 5px solid #2196f3;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 5px;
-        }
-        
-        .quote-box p {
-            font-style: italic;
-            color: #1976d2;
-        }
-        
-        .quote-author {
-            text-align: right;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        
-        .optional-section {
-            background: #fff3e0;
-            border-left: 5px solid #ff9800;
-            padding: 20px 0;
-            margin: 30px 0;
-            border-radius: 5px;
-        }
-        
-        .optional-header {
-            color: #f57c00;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .optional-index {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .optional-index ul {
-            list-style: none;
+        /* ---------- Contador de Avemarías ---------- */
+        .counter { display: flex; flex-direction: column; gap: 12px; }
+        .beads { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        .bead {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            background: transparent;
+            cursor: pointer;
+            font: 600 11px/1 system-ui, sans-serif;
+            color: var(--muted);
             padding: 0;
-            margin: 10px 0 0 0;
+            transition: background .15s, transform .15s;
         }
-        
-        .optional-index li {
-            margin: 8px 0;
+        .bead.on { background: var(--accent); color: var(--on-accent); }
+        .bead.done-all { background: var(--done-fg); border-color: var(--done-fg); color: var(--card); }
+        .counter-actions { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .counter-main { flex: 1; max-width: 300px; padding: 14px 22px; font-size: 1.05em; }
+        .counter-value { font: 700 1em/1 system-ui, sans-serif; color: var(--muted); min-width: 52px; text-align: center; }
+        .counter-undo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
+            font: 700 14px/1 system-ui, sans-serif;
+            color: var(--muted);
         }
-        
-        .optional-index a {
-            color: #f57c00;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .optional-index a:hover {
-            color: #e65100;
-            text-decoration: underline;
-        }
+        .counter-undo:disabled { opacity: .4; cursor: default; }
 
-        /* Estilo para las letanías/oración unificadas */
-        .letanias-oracion-box {
-            padding: 10px;
-            margin-bottom: 10px;
+        /* ---------- Decenas plegables ---------- */
+        .decena { margin: 14px 0; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+        .decena.is-current { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+        .decena-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 14px;
         }
-        
-        .kyrie-line {
-            margin: 5px 0 5px 0;
+        .decena-num {
+            flex: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--accent-soft);
+            color: var(--accent-strong);
+            font: 700 15px/1 system-ui, sans-serif;
         }
+        .decena.is-complete .decena-num { background: var(--done-bg); color: var(--done-fg); }
+        .decena-titles { flex: 1; min-width: 0; }
+        .decena-kicker { display: block; font-size: .8em; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-family: system-ui, sans-serif; }
+        .decena-title { display: block; font-weight: 700; color: var(--accent-strong); line-height: 1.3; }
+        .chev { flex: none; color: var(--muted); transition: transform .2s; }
+        .decena-header[aria-expanded="true"] .chev { transform: rotate(180deg); }
+        .decena-body { padding: 0 12px 6px; }
+        .decena-body[hidden] { display: none; }
 
-        .invocation-line {
-            color: #333;
-            margin: 10px 0 0 0;
-            padding-left: 5px; 
+        .passage-toggle {
+            background: none;
+            border: 1px dashed var(--border);
+            color: var(--accent);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-size: .92em;
         }
-
-        .response-line {
+        .bible-passage {
+            background: var(--surface);
+            padding: 12px 14px;
+            margin-top: 8px;
+            border-radius: 8px;
             font-style: italic;
-            color: #666;
-            margin: 0 0 15px 30px;
+            color: var(--muted);
+            font-size: .95em;
         }
+        .bible-passage .pausa { text-align: right; font-style: normal; color: var(--accent); font-weight: 600; margin-top: 8px; }
 
-        .letanias-oracion-box strong {
-            display: block;
-            margin-top: 20px; 
-            margin-bottom: 10px;
-            color: #764ba2;
-            font-size: 1.1em;
+        /* ---------- Sección opcional ---------- */
+        .optional-section {
+            background: var(--gold-soft);
+            border-left: 4px solid var(--gold);
+            padding: 18px 12px;
+            margin: 30px 0;
+            border-radius: 8px;
         }
+        .optional-header { color: var(--gold); font-size: 1.2em; font-weight: bold; margin-bottom: 8px; }
+        .optional-index { background: var(--card); padding: 14px; border-radius: 8px; margin: 14px 0; }
+        .optional-index ul { list-style: none; margin-top: 8px; }
+        .optional-index li { margin: 6px 0; }
+        .optional-index a { color: var(--gold); font-weight: 600; }
+        .en-curso { font: 700 11px/1 system-ui, sans-serif; background: var(--gold); color: #fff; padding: 3px 7px; border-radius: 999px; vertical-align: 2px; margin-left: 4px; text-transform: uppercase; }
 
-        /* Signo + en color rojo (GUÍA - IMPAR) */
-        .red-plus {
-            color: red;
-            font-weight: bold;
-            margin-right: 5px;
-            margin-left: 5px;
-        }
+        .invocation-line { margin-top: 10px; padding-left: 4px; }
+        .response-line { font-style: italic; color: var(--muted); margin: 0 0 6px 30px !important; }
+        .kyrie-line { margin: 4px 0; }
+        .letanias-oracion-box strong { display: block; margin: 20px 0 8px; color: var(--accent-strong); font-size: 1.05em; }
 
-        /* Signo + en color azul/morado (ASAMBLEA - PAR) */
-        .default-plus {
-            color: #667eea;
-            font-weight: bold;
-            margin-right: 5px;
-            margin-left: 5px;
+        .final-actions { text-align: center; margin-top: 30px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * { transition: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Cómo rezar el Santo Rosario</h1>
-        
-        <p class="intro-text">Selecciona el día de la semana que deseas rezar. Las cinco decenas del Misterio correspondiente se cargarán a continuación. Los signos <span class="red-plus">+</span> indican la parte del Guía y los <span class="default-plus">+</span> la parte de la Asamblea.</p>
-        
+    <header class="topbar">
+        <div class="topbar-row">
+            <a class="brand" href="" title="Recargar la página">
+                <span class="brand-icon" aria-hidden="true">📿</span><span class="brand-text">Santo Rosario</span>
+            </a>
+            <button class="progress-label" id="progress-label" data-jump="actual" aria-live="polite" title="Ir a donde vas"></button>
+            <button class="tool-btn" data-font="-1" aria-label="Reducir tamaño de letra">A−</button>
+            <button class="tool-btn" data-font="1" aria-label="Aumentar tamaño de letra">A+</button>
+            <button class="tool-btn" id="reset-btn" aria-label="Reiniciar el rosario" title="Reiniciar el rosario">↺</button>
+        </div>
+        <nav class="topbar-row chips" aria-label="Secciones">
+            <button class="chip" data-jump="seleccion">Misterios</button>
+            <button class="chip" data-jump="inicio-rosario">Inicio</button>
+            <button class="chip" data-jump="decena">Decena actual</button>
+            <button class="chip" data-jump="fin-rosario">Final</button>
+            <button class="chip" data-jump="opcionales">Opcionales</button>
+            <button class="chip" data-jump="citas">Citas</button>
+        </nav>
+        <div class="progress-bar" aria-hidden="true"><div id="progress-fill"></div></div>
+    </header>
+
+    <main class="container">
+        <h1><a href="" title="Recargar la página">Cómo rezar el Santo Rosario</a></h1>
+
+        <p class="intro-text">Los misterios del día ya están seleccionados; puedes cambiarlos más abajo. Marca cada oración al terminarla: tu avance se guarda en este dispositivo y la pantalla se mantiene encendida mientras rezas.</p>
+
+        <div class="legend">
+            <span><span class="red-plus">+</span><span class="rol rol-guia">Guía</span> parte del Guía</span>
+            <span><span class="default-plus">+</span><span class="rol rol-asamblea">Asamblea</span> parte de la Asamblea</span>
+            <span class="legend-note">En el segundo y cuarto misterio se alternan: comienza la Asamblea y responde el Guía.</span>
+        </div>
+
+        <div id="mes-maria-aviso"></div>
+
         <div class="quote-box">
             <p>El Santo Rosario es una devoción recomendada por muchos Papas y Santos. La misma Virgen pidió que se rezase en Lourdes y Fátima.</p>
         </div>
 
-        <div id="inicio-rosario">
-            </div>
+        <h2 id="seleccion">Misterios del día</h2>
+        <div class="mystery-selection-controls" id="mystery-types"></div>
+        <div class="rosario-del-dia" id="rosario-del-dia"></div>
 
-        
-        <h2>Selección del Misterio del Día</h2>
+        <h2 id="inicio-rosario">Oraciones iniciales</h2>
+        <div id="inicio-contenido"></div>
 
-        <div class="mystery-selection-controls" id="mystery-types">
-            </div>
+        <h2 id="decenas">Las cinco decenas</h2>
+        <div id="decenas-completas"></div>
 
-        <div id="misterio-seleccionado">
-            <p style="text-align: center; color: #777; padding: 20px;">Pulsa en el misterio que corresponde al día para comenzar a rezar las cinco decenas.</p>
-        </div>
+        <div id="fin-rosario"></div>
 
-        <div id="fin-rosario">
-            </div>
-
-        <h2>Citas sobre el Santo Rosario</h2>
+        <h2 id="citas">Citas sobre el Santo Rosario</h2>
         <div id="quotes-content"></div>
-    </div>
 
-
+        <div class="final-actions">
+            <button class="prayer-button" data-jump="top">↑ Volver arriba</button>
+        </div>
+    </main>
 
     <script>
         // --- ALMACENAMIENTO DE ORACIONES Y MISTERIOS ---
 
         const oraciones = {
             inicio: "Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor Dios Nuestro. En el nombre del Padre, del Hijo y del Espíritu Santo. Amén.",
-            
-            bajoTuAmparo: "Bajo tu amparo nos acogemos, Santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh siempre Virgen, gloriosa y bendita!",
-            
-            invocaciones: {
-                linea1: "Señor, ábreme los labios.",
-                respuesta1: "Y mi boca proclamará tu alabanza.",
-                linea2: "Dios mío, ven en mi auxilio.",
-                respuesta2: "Señor, date prisa en socorrerme.",
-                linea3: "Gloria al Padre y al Hijo y al Espíritu Santo.",
-                respuesta3: "Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén."
-            },
-            
-            // --- VERSIONES NORMALES (ROJO/GUÍA -> AZUL/ASAMBLEA) ---
-            // Usada para Misterios IMPARES (1°, 3°, 5°)
-            padrenuestro: "<span class='red-plus'>+</span> Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. <span class='default-plus'>+</span> Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.",
-            avemaria: "<span class='red-plus'>+</span> Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús. <span class='default-plus'>+</span> Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.",
-            gloria: "<span class='red-plus'>+</span> Gloria al Padre y al Hijo y al Espíritu Santo. <span class='default-plus'>+</span> Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.",
 
-            // --- VERSIONES INVERSAS (AZUL/GUÍA -> ROJO/ASAMBLEA) ---
-            // Usada para Misterios PARES (2°, 4°)
-            padrenuestroInverso: "<span class='default-plus'>+</span> Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. <span class='red-plus'>+</span> Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén.",
-            avemariaInversa: "<span class='default-plus'>+</span> Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús. <span class='red-plus'>+</span> Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.",
-            gloriaInversa: "<span class='default-plus'>+</span> Gloria al Padre y al Hijo y al Espíritu Santo. <span class='red-plus'>+</span> Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.",
+            bajoTuAmparo: "Bajo tu amparo nos acogemos, Santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh siempre Virgen, gloriosa y bendita!",
+
+            invocaciones: [
+                ["Señor, ábreme los labios.", "Y mi boca proclamará tu alabanza."],
+                ["Dios mío, ven en mi auxilio.", "Señor, date prisa en socorrerme."],
+                ["Gloria al Padre y al Hijo y al Espíritu Santo.", "Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén."]
+            ],
+
+            // Oraciones en dos partes: [primera parte, segunda parte].
+            // Misterios 1°, 3°, 5°: + rojo (Guía) y luego + azul (Asamblea).
+            // Misterios 2°, 4°: se invierte el orden (+ azul primero, + rojo después).
+            padrenuestro: [
+                "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.",
+                "Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación y líbranos del mal. Amén."
+            ],
+            avemaria: [
+                "Dios te salve, María, llena eres de gracia; el Señor es contigo, bendita Tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.",
+                "Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén."
+            ],
+            gloria: [
+                "Gloria al Padre y al Hijo y al Espíritu Santo.",
+                "Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén."
+            ],
 
             ohJesus: "Oh Jesús mío, perdona nuestros pecados. Líbranos del fuego del infierno, lleva a todas las almas al cielo, socorre especialmente a las más necesitadas de tu misericordia. Y envíanos santas vocaciones.",
-            
+
             santiguacion: "En el nombre del Padre, del Hijo y del Espíritu Santo. Amén.",
-            
-            cordero: {
-                linea1: "Cordero de Dios, que quitas el pecado del mundo,",
-                respuesta1: "perdónanos, Señor.",
-                linea2: "Cordero de Dios, que quitas el pecado del mundo,",
-                respuesta2: "escúchanos, Señor.",
-                linea3: "Cordero de Dios, que quitas el pecado del mundo,",
-                respuesta3: "ten misericordia de nosotros.",
-                linea4: "Ruega por nosotros, Santa Madre de Dios.",
-                respuesta4: "Para que seamos dignos de las promesas de Cristo."
-            },
-            
+
+            cordero: [
+                ["Cordero de Dios, que quitas el pecado del mundo,", "perdónanos, Señor."],
+                ["Cordero de Dios, que quitas el pecado del mundo,", "escúchanos, Señor."],
+                ["Cordero de Dios, que quitas el pecado del mundo,", "ten misericordia de nosotros."],
+                ["Ruega por nosotros, Santa Madre de Dios.", "Para que seamos dignos de las promesas de Cristo."]
+            ],
+
             oracionFinal: "Te rogamos nos concedas, Señor Dios nuestro, gozar de continua salud de alma y cuerpo, y por la gloriosa intercesión de la bienaventurada siempre Virgen María, vernos libres de las tristezas de la vida presente y disfrutar de las alegrías eternas. Por Cristo nuestro Señor. Amén.",
-            
+
             salve: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A Ti clamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando, en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clementísima, oh piadosa, oh dulce Virgen María! Ruega por nosotros, Santa Madre de Dios. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.",
-            
-            jaculatoria: {
-                linea: "Ave María Purísima.",
-                respuesta: "Sin pecado concebida."
-            },
-            
+
+            jaculatoria: ["Ave María Purísima.", "Sin pecado concebida."],
+
             mesMaria: {
                 inicial: "¡Oh, María!, durante el bello mes que te está consagrado, todo resuena con tu Nombre y alabanza. Tu Santuario resplandece con nuevo brillo y nuestras manos te han elevado un trono de gracia y de amor, desde donde presides nuestras fiestas y escuchas nuestras oraciones y votos. Para honrarte, hemos esparcido frescas flores a tus pies y adornado tu frente con guirnaldas y coronas. Mas, ¡oh, María!, no te das por satisfecha con estos homenajes; hay flores cuya frescura y lozanía jamás pasan y coronas que no se marchitan. Éstas son las que Tú esperas de tus hijos, porque el más hermoso adorno de una madre es la piedad de sus hijos y la más bella corona que pueden poner a sus pies es la de sus virtudes. Sí, los lirios que Tú nos pides son la inocencia de nuestros corazones. Nos esforzaremos pues, durante el curso de este mes consagrado a tu gloria, ¡oh, Virgen Santa! en conservar nuestras almas puras y sin mancha, y en separar de nuestros pensamientos, deseos y miradas, aun la sombra misma del mal. La rosa, cuyo brillo agrada a tus ojos es la caridad, el amor a Dios y a nuestros hermanos. Nos amaremos pues los unos a los otros como hijos de una misma familia cuya madre eres, viviendo todos en la dulzura de una concordia fraternal. En este mes bendito, procuraremos cultivar en nuestros corazones la humildad, modesta flor que te es tan querida y con tu auxilio llegaremos a ser puros, humildes, caritativos, pacientes y esperanzados. ¡Oh, María!, haz producir en el fondo de nuestros corazones todas estas amables virtudes, que ellas broten, florezcan y den al fin frutos de gracia, para poder ser algún día dignos hijos de la más Santa y de la mejor de las madres. Amén.",
-                
+
                 final: "Oh María, Madre de Jesús, nuestro Salvador y nuestra buena Madre. Nosotros venimos a ofrecerte con estos obsequios que colocamos a tus pies, nuestros corazones, deseosos de agradarte y a solicitar de tu bondad un nuevo ardor en tu santo servicio. Dígnate presentarnos a tu Divino Hijo, que en vista de sus méritos y a nombre de su Santa Madre, dirija nuestros pasos por el sendero de la virtud. Que haga lucir con nuevo esplendor la luz de la fe sobre los infortunados pueblos que gimen por tanto tiempo en las tinieblas del error; que vuelvan hacia Él y cambie tantos corazones rebeldes cuya penitencia regocijará su corazón y el tuyo. Que convierta a los enemigos de su Iglesia y que en fin encienda por todas partes el fuego de su ardiente caridad. Que nos colme de alegría, en medio de las tribulaciones de esta vida, y de esperanza para el porvenir. Amén."
             }
         };
 
         const todosLosMisterios = {
             gozosos: [
-                { titulo: "La Encarnación del Hijo de Dios", dia: "Lunes y Sábado", pasaje: "«Al sexto mes el ángel Gabriel fue enviado por Dios a una ciudad de Galilea, llamada Nazaret, a una virgen desposada con un hombre llamado José, de la estirpe de David; el nombre de la virgen era María» (Lc 1,26-27)." },
-                { titulo: "La Visitación de Nuestra Señora a su prima Santa Isabel", dia: "Lunes y Sábado", pasaje: "«En aquellos días María se puso en camino y fue aprisa a la región montañosa, a una ciudad de Judá; entró en casa de Zacarías y saludó a Isabel. Y sucedió que, en cuanto Isabel oyó el saludo de María, saltó de gozo el niño en su seno, e Isabel quedó llena de Espíritu Santo; y exclamando a voz en grito, dijo: 'Bendita tú entre las mujeres y bendito el fruto de tu seno'» (Lc 1, 39-42)" },
-                { titulo: "El Nacimiento del Hijo de Dios en el portal de Belén", dia: "Lunes y Sábado", pasaje: "«Sucedió que por aquellos días salió un edicto de César Augusto ordenando que se empadronase todo el mundo... Subió también José desde Galilea... a la ciudad de David, que se llama Belén... para empadronarse con María, su esposa, que estaba encinta. Y sucedió que, mientras ellos estaban allí, se le cumplieron los días del alumbramiento, y dio a luz a su hijo primogénito, le envolvió en pañales y le acostó en un pesebre, porque no tenían sitio en el alojamiento» (Lc 2,1-7)." },
-                { titulo: "La presentación de Jesús en el Templo", dia: "Lunes y Sábado", pasaje: "«Cuando se cumplieron los ocho días para circuncidarle, se le dio el nombre de Jesús... Cuando se cumplieron los días de la purificación de ellos, según la Ley de Moisés, llevaron a Jesús a Jerusalén para presentarle al Señor... y para ofrecer en sacrificio un par de tórtolas o dos pichones, conforme a lo que se dice en la Ley del Señor» (Lc 2, 21-24)." },
-                { titulo: "El Niño Jesús perdido y hallado en el Templo", dia: "Lunes y Sábado", pasaje: "«Sus padres iban todos los años a Jerusalén a la fiesta de la Pascua... el niño Jesús se quedó en Jerusalén, sin saberlo sus padres... Y sucedió que al cabo de tres días, le encontraron en el Templo sentado en medio de los maestros, escuchándoles y preguntándoles; todos los que le oían, estaban estupefactos por su inteligencia y sus respuestas» (Lc 2, 41-47)" }
+                { titulo: "La Encarnación del Hijo de Dios", pasaje: "«Al sexto mes el ángel Gabriel fue enviado por Dios a una ciudad de Galilea, llamada Nazaret, a una virgen desposada con un hombre llamado José, de la estirpe de David; el nombre de la virgen era María» (Lc 1,26-27)." },
+                { titulo: "La Visitación de Nuestra Señora a su prima Santa Isabel", pasaje: "«En aquellos días María se puso en camino y fue aprisa a la región montañosa, a una ciudad de Judá; entró en casa de Zacarías y saludó a Isabel. Y sucedió que, en cuanto Isabel oyó el saludo de María, saltó de gozo el niño en su seno, e Isabel quedó llena de Espíritu Santo; y exclamando a voz en grito, dijo: 'Bendita tú entre las mujeres y bendito el fruto de tu seno'» (Lc 1, 39-42)" },
+                { titulo: "El Nacimiento del Hijo de Dios en el portal de Belén", pasaje: "«Sucedió que por aquellos días salió un edicto de César Augusto ordenando que se empadronase todo el mundo... Subió también José desde Galilea... a la ciudad de David, que se llama Belén... para empadronarse con María, su esposa, que estaba encinta. Y sucedió que, mientras ellos estaban allí, se le cumplieron los días del alumbramiento, y dio a luz a su hijo primogénito, le envolvió en pañales y le acostó en un pesebre, porque no tenían sitio en el alojamiento» (Lc 2,1-7)." },
+                { titulo: "La presentación de Jesús en el Templo", pasaje: "«Cuando se cumplieron los ocho días para circuncidarle, se le dio el nombre de Jesús... Cuando se cumplieron los días de la purificación de ellos, según la Ley de Moisés, llevaron a Jesús a Jerusalén para presentarle al Señor... y para ofrecer en sacrificio un par de tórtolas o dos pichones, conforme a lo que se dice en la Ley del Señor» (Lc 2, 21-24)." },
+                { titulo: "El Niño Jesús perdido y hallado en el Templo", pasaje: "«Sus padres iban todos los años a Jerusalén a la fiesta de la Pascua... el niño Jesús se quedó en Jerusalén, sin saberlo sus padres... Y sucedió que al cabo de tres días, le encontraron en el Templo sentado en medio de los maestros, escuchándoles y preguntándoles; todos los que le oían, estaban estupefactos por su inteligencia y sus respuestas» (Lc 2, 41-47)" }
             ],
             luminosos: [
-                { titulo: "El Bautismo en el Jordán", dia: "Jueves", pasaje: "«Bautizado Jesús, salió luego del agua; y en esto se abrieron los cielos y vio al Espíritu de Dios que bajaba en forma de paloma y venía sobre él. Y una voz que salía de los cielos decía: 'Este es mi Hijo amado, en quien me complazco'». (Mt 3,16-17)" },
-                { titulo: "Las bodas de Caná", dia: "Jueves", pasaje: "«Tres días después se celebraba una boda en Caná de Galilea y estaba allí la madre de Jesús. Fue invitado también a la boda Jesús con sus discípulos... Jesús le responde: '¿Qué tengo yo contigo, mujer? Todavía no ha llegado mi hora'. Dice su madre a los sirvientes: 'Haced lo que él os diga'». (Jn 2, 1-5)." },
-                { titulo: "El anuncio del Reino de Dios", dia: "Jueves", pasaje: "\"El tiempo se ha cumplido y el Reino de Dios está cerca; convertíos y creed en el Evangelio\". (Mc 1, 15)" },
-                { titulo: "La Transfiguración", dia: "Jueves", pasaje: "«Seis días después, Jesús tomó consigo a Pedro, a Santiago y a su hermano Juan, y los llevó aparte, a un monte alto. Y se transfiguró delante de ellos: su rostro se puso brillante como el sol y sus vestidos se volvieron blancos como la luz» (Mt 17, 1-2)." },
-                { titulo: "La institución de la Eucaristía", dia: "Jueves", pasaje: "«Mientras estaban comiendo, tomó Jesús pan y lo bendijo, lo partió y, dándoselo a sus discípulos, dijo: 'Tomad, comed, éste es mi cuerpo'» (Mt 26, 26)." }
+                { titulo: "El Bautismo en el Jordán", pasaje: "«Bautizado Jesús, salió luego del agua; y en esto se abrieron los cielos y vio al Espíritu de Dios que bajaba en forma de paloma y venía sobre él. Y una voz que salía de los cielos decía: 'Este es mi Hijo amado, en quien me complazco'». (Mt 3,16-17)" },
+                { titulo: "Las bodas de Caná", pasaje: "«Tres días después se celebraba una boda en Caná de Galilea y estaba allí la madre de Jesús. Fue invitado también a la boda Jesús con sus discípulos... Jesús le responde: '¿Qué tengo yo contigo, mujer? Todavía no ha llegado mi hora'. Dice su madre a los sirvientes: 'Haced lo que él os diga'». (Jn 2, 1-5)." },
+                { titulo: "El anuncio del Reino de Dios", pasaje: "\"El tiempo se ha cumplido y el Reino de Dios está cerca; convertíos y creed en el Evangelio\". (Mc 1, 15)" },
+                { titulo: "La Transfiguración", pasaje: "«Seis días después, Jesús tomó consigo a Pedro, a Santiago y a su hermano Juan, y los llevó aparte, a un monte alto. Y se transfiguró delante de ellos: su rostro se puso brillante como el sol y sus vestidos se volvieron blancos como la luz» (Mt 17, 1-2)." },
+                { titulo: "La institución de la Eucaristía", pasaje: "«Mientras estaban comiendo, tomó Jesús pan y lo bendijo, lo partió y, dándoselo a sus discípulos, dijo: 'Tomad, comed, éste es mi cuerpo'» (Mt 26, 26)." }
             ],
             dolorosos: [
-                { titulo: "La oración en el Huerto", dia: "Martes y Viernes", pasaje: "«Entonces Jesús fue con ellos a un huerto, llamado Getsemaní... y suplicaba así: 'Padre mío, si es posible, que pase de mí esta copa, pero no sea como yo quiero, sino como quieras tú'» (Mt 26, 36-39)." },
-                { titulo: "La flagelación de Jesús atado a la columna", dia: "Martes y Viernes", pasaje: "«Pilato puso en libertad a Barrabás; y a Jesús, después de haberlo hecho azotar, lo entregó para que fuera crucificado» (Mt 27, 26)." },
-                { titulo: "La coronación de espinas", dia: "Martes y Viernes", pasaje: "«Lo desnudaron y le echaron encima un manto de púrpura y, trenzando una corona de espinas, se la pusieron sobre la cabeza, y en su mano derecha una caña, y doblando la rodilla delante de él, le hacían burla diciendo: 'Salve, Rey de los judíos'». (Mt 27, 27-29)" },
-                { titulo: "Jesús con la Cruz a cuestas camino del Calvario", dia: "Martes y Viernes", pasaje: "«Y obligaron a uno que pasaba, a Simón de Cirene... a que llevara su cruz. Lo condujeron al lugar del Gólgota, que quiere decir de la 'Calavera'» (Mc 15, 21-22)." },
-                { titulo: "La crucifixión y muerte de Jesús", dia: "Martes y Viernes", pasaje: "«Llegados al lugar llamado 'La Calavera', le crucificaron allí a él y a los dos malhechores... Jesús decía: 'Padre, perdónales, porque no saben lo que hacen'... El velo del Santuario se rasgó por medio y Jesús, dando un fuerte grito dijo: 'Padre, en tus manos pongo mi espíritu' y, dicho esto, expiró» (Lc 23, 33-46)." }
+                { titulo: "La oración en el Huerto", pasaje: "«Entonces Jesús fue con ellos a un huerto, llamado Getsemaní... y suplicaba así: 'Padre mío, si es posible, que pase de mí esta copa, pero no sea como yo quiero, sino como quieras tú'» (Mt 26, 36-39)." },
+                { titulo: "La flagelación de Jesús atado a la columna", pasaje: "«Pilato puso en libertad a Barrabás; y a Jesús, después de haberlo hecho azotar, lo entregó para que fuera crucificado» (Mt 27, 26)." },
+                { titulo: "La coronación de espinas", pasaje: "«Lo desnudaron y le echaron encima un manto de púrpura y, trenzando una corona de espinas, se la pusieron sobre la cabeza, y en su mano derecha una caña, y doblando la rodilla delante de él, le hacían burla diciendo: 'Salve, Rey de los judíos'». (Mt 27, 27-29)" },
+                { titulo: "Jesús con la Cruz a cuestas camino del Calvario", pasaje: "«Y obligaron a uno que pasaba, a Simón de Cirene... a que llevara su cruz. Lo condujeron al lugar del Gólgota, que quiere decir de la 'Calavera'» (Mc 15, 21-22)." },
+                { titulo: "La crucifixión y muerte de Jesús", pasaje: "«Llegados al lugar llamado 'La Calavera', le crucificaron allí a él y a los dos malhechores... Jesús decía: 'Padre, perdónales, porque no saben lo que hacen'... El velo del Santuario se rasgó por medio y Jesús, dando un fuerte grito dijo: 'Padre, en tus manos pongo mi espíritu' y, dicho esto, expiró» (Lc 23, 33-46)." }
             ],
             gloriosos: [
-                { titulo: "La resurrección del Hijo de Dios", dia: "Miércoles y Domingo", pasaje: "«El primer día de la semana, muy de mañana, fueron al sepulcro... ellos les dijeron: '¿Por qué buscáis entre los muertos al que está vivo? No está aquí, ha resucitado'» (Lc 24, 1-6)." },
-                { titulo: "La Ascensión del Señor al cielo", dia: "Miércoles y Domingo", pasaje: "«El Señor Jesús, después de hablarles, ascendió al cielo y se sentó a la derecha de Dios» (Mc 16, 19)." },
-                { titulo: "La venida del Espíritu Santo", dia: "Miércoles y Domingo", pasaje: "«Al llegar el día de Pentecostés, estaban todos reunidos en un mismo lugar... Se les aparecieron unas lenguas como de fuego... quedaron todos llenos del Espíritu Santo y se pusieron a hablar en otras lenguas» (Hch 2, 1-4)." },
-                { titulo: "La Asunción de María al cielo", dia: "Miércoles y Domingo", pasaje: "«Todas las generaciones me llamarán bienaventurada porque el Señor ha hecho obras grandes en mí» (Lc 1, 48-49)." },
-                { titulo: "La coronación de María como Reina y Señora de todo lo creado", dia: "Miércoles y Domingo", pasaje: "«Una gran señal apareció en el cielo: una mujer, vestida de sol, con la luna bajo sus pies, y una corona de doce estrellas sobre su cabeza» (Ap 12, 1)." }
+                { titulo: "La resurrección del Hijo de Dios", pasaje: "«El primer día de la semana, muy de mañana, fueron al sepulcro... ellos les dijeron: '¿Por qué buscáis entre los muertos al que está vivo? No está aquí, ha resucitado'» (Lc 24, 1-6)." },
+                { titulo: "La Ascensión del Señor al cielo", pasaje: "«El Señor Jesús, después de hablarles, ascendió al cielo y se sentó a la derecha de Dios» (Mc 16, 19)." },
+                { titulo: "La venida del Espíritu Santo", pasaje: "«Al llegar el día de Pentecostés, estaban todos reunidos en un mismo lugar... Se les aparecieron unas lenguas como de fuego... quedaron todos llenos del Espíritu Santo y se pusieron a hablar en otras lenguas» (Hch 2, 1-4)." },
+                { titulo: "La Asunción de María al cielo", pasaje: "«Todas las generaciones me llamarán bienaventurada porque el Señor ha hecho obras grandes en mí» (Lc 1, 48-49)." },
+                { titulo: "La coronación de María como Reina y Señora de todo lo creado", pasaje: "«Una gran señal apareció en el cielo: una mujer, vestida de sol, con la luna bajo sus pies, y una corona de doce estrellas sobre su cabeza» (Ap 12, 1)." }
             ]
         };
-        
+
         const misterioTipos = {
-            gozosos: { nombre: "Gozosos", dias: "Lunes y Sábado" },
-            luminosos: { nombre: "Luminosos", dias: "Jueves" },
-            dolorosos: { nombre: "Dolorosos", dias: "Martes y Viernes" },
-            gloriosos: { nombre: "Gloriosos", dias: "Miércoles y Domingo" }
+            gozosos: { nombre: "Gozosos", singular: "Gozoso", dias: "Lunes y Sábado", diasSemana: [1, 6] },
+            dolorosos: { nombre: "Dolorosos", singular: "Doloroso", dias: "Martes y Viernes", diasSemana: [2, 5] },
+            gloriosos: { nombre: "Gloriosos", singular: "Glorioso", dias: "Miércoles y Domingo", diasSemana: [3, 0] },
+            luminosos: { nombre: "Luminosos", singular: "Luminoso", dias: "Jueves", diasSemana: [4] }
         };
 
         const letaniasCompletas = [
@@ -511,353 +658,473 @@
         ];
 
         const citas = [
-            {
-                texto: "El Rosario me ha acompañado en los momentos de alegría y en los de tribulación. A él he confiado tantas preocupaciones y en él siempre he encontrado consuelo.",
-                autor: "San Juan Pablo II"
-            },
-            {
-                texto: "No encuentro otro medio más poderoso para atraer sobre nosotros el Reino de Dios, la Sabiduría eterna, que unir a la oración vocal la oración mental, rezando el Santo Rosario y meditando sus misterios.",
-                autor: "San Luis María Grignión de Montfort"
-            },
-            {
-                texto: "Rezad el Rosario todos los días para alcanzar la paz del mundo y el fin de la guerra.",
-                autor: "Virgen de Fátima, tercera aparición 13 de Julio de 1917"
-            },
-            {
-                texto: "Aférrate al Rosario como las hojas de la hiedra se aferran al árbol; porque sin nuestra Señora no podemos permanecer.",
-                autor: "Santa Teresa de Calcuta"
-            },
-            {
-                texto: "El santo Rosario es el remedio más conveniente y eficaz para obtener la ayuda materna de la Virgen.",
-                autor: "Papa Pío XII"
-            },
-            {
-                texto: "¡Amen a la Virgen y háganla amar. Reciten siempre el Rosario!",
-                autor: "Padre Pío de Pietrelcina"
-            }
+            { texto: "El Rosario me ha acompañado en los momentos de alegría y en los de tribulación. A él he confiado tantas preocupaciones y en él siempre he encontrado consuelo.", autor: "San Juan Pablo II" },
+            { texto: "No encuentro otro medio más poderoso para atraer sobre nosotros el Reino de Dios, la Sabiduría eterna, que unir a la oración vocal la oración mental, rezando el Santo Rosario y meditando sus misterios.", autor: "San Luis María Grignión de Montfort" },
+            { texto: "Rezad el Rosario todos los días para alcanzar la paz del mundo y el fin de la guerra.", autor: "Virgen de Fátima, tercera aparición 13 de Julio de 1917" },
+            { texto: "Aférrate al Rosario como las hojas de la hiedra se aferran al árbol; porque sin nuestra Señora no podemos permanecer.", autor: "Santa Teresa de Calcuta" },
+            { texto: "El santo Rosario es el remedio más conveniente y eficaz para obtener la ayuda materna de la Virgen.", autor: "Papa Pío XII" },
+            { texto: "¡Amen a la Virgen y háganla amar. Reciten siempre el Rosario!", autor: "Padre Pío de Pietrelcina" }
         ];
 
+        const ORDINALES = ["Primer", "Segundo", "Tercer", "Cuarto", "Quinto"];
 
-        // --- FUNCIONES DE UTILIDAD Y GENERACIÓN DE HTML ---
+        // --- PASOS QUE CUENTAN PARA EL PROGRESO ---
+        // Un paso simple vale 1; un contador vale 1 por cada Avemaría.
+        const PASOS_INICIO = ["ini-senal", "ini-amparo", "ini-invoc"];
+        const PASOS_DECENA = n => [`d${n}-pn`, `d${n}-am`, `d${n}-gl`, `d${n}-oj`];
+        const PASOS_FIN = ["fin-salve", "fin-jac", "fin-pn", "fin-am3", "fin-sant"];
+        const maxDe = id => id === "fin-am3" ? 3 : (id.endsWith("-am") ? 10 : 0);
 
-        function crearSeccionOracion(titulo, texto, botonTexto = "✓ Completar", subtitulo = "") {
+        // --- ESTADO (se guarda por día en este dispositivo) ---
+        const STORAGE_KEY = "rosario-estado-v1";
+        const FONT_KEY = "rosario-tamano-letra";
+        const TAMANOS = [15, 16, 17, 18, 20, 22, 24];
+
+        const hoy = new Date();
+        const fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+        const tipoDeHoy = Object.keys(misterioTipos).find(k => misterioTipos[k].diasSemana.includes(hoy.getDay()));
+
+        function estadoNuevo(tipo) {
+            return { fecha: fechaHoy, tipo: tipo || tipoDeHoy, done: {}, counts: {} };
+        }
+
+        function cargarEstado() {
+            try {
+                const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                if (s && s.fecha === fechaHoy && misterioTipos[s.tipo]) {
+                    return { ...estadoNuevo(s.tipo), done: s.done || {}, counts: s.counts || {} };
+                }
+            } catch (e) { /* almacenamiento no disponible */ }
+            return estadoNuevo();
+        }
+
+        function guardarEstado() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* sin almacenamiento */ }
+        }
+
+        let state = cargarEstado();
+        const decenaAbierta = new Map(); // decisiones manuales del usuario: n -> true/false
+
+        const estaHecho = id => {
+            const max = maxDe(id);
+            return max ? (state.counts[id] || 0) >= max : !!state.done[id];
+        };
+        const decenaCompleta = n => PASOS_DECENA(n).every(estaHecho);
+        const decenaActual = () => { for (let n = 0; n < 5; n++) if (!decenaCompleta(n)) return n; return 5; };
+
+        // --- GENERACIÓN DE HTML ---
+
+        const MARCA = {
+            G: `<span class="red-plus" aria-hidden="true">+</span><span class="rol rol-guia">Guía</span>`,
+            A: `<span class="default-plus" aria-hidden="true">+</span><span class="rol rol-asamblea">Asamblea</span>`
+        };
+
+        function textoAlternado(partes, invertido = false) {
+            const [r1, r2] = invertido ? ["A", "G"] : ["G", "A"];
+            return `<p class="parte">${MARCA[r1]}${partes[0]}</p><p class="parte">${MARCA[r2]}${partes[1]}</p>`;
+        }
+
+        function versiculos(pares) {
+            return pares.map(([v, r], i) => `${i ? '<div class="gap"></div>' : ''}<p>${v}</p><p class="response">${r}</p>`).join("");
+        }
+
+        function botonPaso(id, texto = "Completar") {
+            return `<button class="prayer-button" data-step="${id}" data-label="${texto}" aria-pressed="false">✓ ${texto}</button>`;
+        }
+
+        function contador(id, max, nombre = "Avemaría") {
+            let cuentas = "";
+            for (let i = 1; i <= max; i++) {
+                cuentas += `<button class="bead" data-bead="${i}" aria-label="${nombre} ${i} de ${max}">${i}</button>`;
+            }
             return `
-                <div class="prayer-section">
+                <div class="counter" data-counter="${id}" data-max="${max}">
+                    <div class="beads">${cuentas}</div>
+                    <div class="counter-actions">
+                        <button class="counter-undo" data-counter-undo aria-label="Quitar un ${nombre}">−1</button>
+                        <button class="prayer-button counter-main" data-counter-main>+1 ${nombre}</button>
+                        <span class="counter-value" aria-live="polite">0 / ${max}</span>
+                    </div>
+                </div>`;
+        }
+
+        function seccion({ id, titulo, subtitulo = "", cuerpo, control }) {
+            return `
+                <div class="prayer-section" data-section="${id}">
                     <h4>${titulo}</h4>
-                    ${subtitulo ? `<div class="mystery-subtitle">${subtitulo}</div>` : ''}
-                    <div class="prayer-text">
-                        <p>${texto}</p>
-                    </div>
-                    <button class="prayer-button" onclick="markCompleted(this)">${botonTexto}</button>
-                </div>
-            `;
+                    ${subtitulo ? `<div class="mystery-subtitle">${subtitulo}</div>` : ""}
+                    <div class="prayer-text">${cuerpo}</div>
+                    ${control || botonPaso(id)}
+                </div>`;
         }
 
-        function crear10Avemarias(misterioActual, avemariaText) {
-            let botones = '';
-            for (let i = 1; i <= 10; i++) {
-                botones += `<button class="prayer-button" onclick="markCompleted(this)">${i}</button>`;
-            }
-            return `
-                <div class="prayer-section">
-                    <h4>10 Avemarías</h4>
-                    ${misterioActual ? `<div class="mystery-subtitle">${misterioActual}</div>` : ''}
-                    <div class="prayer-text">
-                        <p>${avemariaText}</p>
-                    </div>
-                    ${botones}
-                </div>
-            `;
-        }
-        
-        function crearSeccionInvocaciones(datos) {
-            return `
-                <div class="prayer-section">
-                    <h4>Invocaciones iniciales</h4>
-                    <div class="prayer-text">
-                        <p>${datos.linea1}</p>
-                        <p class="response">${datos.respuesta1}</p>
-                        <br>
-                        <p>${datos.linea2}</p>
-                        <p class="response">${datos.respuesta2}</p>
-                        <br>
-                        <p>${datos.linea3}</p>
-                        <p class="response">${datos.respuesta3}</p>
-                    </div>
-                    <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
-                </div>
-            `;
+        function generarInicio() {
+            return [
+                seccion({ id: "ini-senal", titulo: "Señal de la Cruz", cuerpo: `<p>${oraciones.inicio}</p>` }),
+                seccion({ id: "ini-amparo", titulo: "Bajo tu amparo", cuerpo: `<p>${oraciones.bajoTuAmparo}</p>` }),
+                seccion({ id: "ini-invoc", titulo: "Invocaciones iniciales", cuerpo: versiculos(oraciones.invocaciones) })
+            ].join("");
         }
 
-        function crear3Avemarias() {
-            let botones = '';
-            for (let i = 1; i <= 3; i++) {
-                botones += `<button class="prayer-button" onclick="markCompleted(this)">${i}</button>`;
-            }
-            // Aquí usamos la versión normal (ROJO/Guía -> AZUL/Asamblea) para las 3 Avemarías.
+        function generarDecena(tipo, n) {
+            const m = todosLosMisterios[tipo][n];
+            const nombre = `${ORDINALES[n]} Misterio ${misterioTipos[tipo].singular}`;
+            const inv = n % 2 === 1; // 2° y 4°: comienza la Asamblea
+            const d = `d${n}`;
             return `
-                <div class="prayer-section">
-                    <h4>3 Avemarías</h4>
-                    <div class="prayer-text">
-                        <p>${oraciones.avemaria}</p>
+                <section class="decena" id="decena-${n}" data-decena="${n}">
+                    <button class="decena-header" data-toggle-decena="${n}" aria-expanded="false" aria-controls="decena-body-${n}">
+                        <span class="decena-num" aria-hidden="true">${n + 1}</span>
+                        <span class="decena-titles">
+                            <span class="decena-kicker">${nombre}</span>
+                            <span class="decena-title">${m.titulo}</span>
+                        </span>
+                        <span class="chev" aria-hidden="true">▾</span>
+                    </button>
+                    <div class="decena-body" id="decena-body-${n}" hidden>
+                        <button class="passage-toggle" data-passage="pasaje-${n}" aria-expanded="false" aria-controls="pasaje-${n}">📖 Leer el pasaje bíblico</button>
+                        <div class="bible-passage" id="pasaje-${n}" hidden>
+                            <p>${m.pasaje}</p>
+                            <p class="pausa">(Breve pausa de reflexión)</p>
+                        </div>
+                        ${seccion({ id: `${d}-pn`, titulo: "Padrenuestro", subtitulo: nombre, cuerpo: textoAlternado(oraciones.padrenuestro, inv) })}
+                        ${seccion({ id: `${d}-am`, titulo: "10 Avemarías", subtitulo: nombre, cuerpo: textoAlternado(oraciones.avemaria, inv), control: contador(`${d}-am`, 10) })}
+                        ${seccion({ id: `${d}-gl`, titulo: "Gloria", subtitulo: nombre, cuerpo: textoAlternado(oraciones.gloria, inv) })}
+                        ${seccion({ id: `${d}-oj`, titulo: "Oh, Jesús mío", subtitulo: nombre, cuerpo: `<p>${oraciones.ohJesus}</p>` })}
                     </div>
-                    ${botones}
-                </div>
-            `;
+                </section>`;
         }
 
-        function crearLetanias() {
-            let html = `<h2 id="letanias-y-oracion-final">Letanías de la Santísima Virgen, Cordero de Dios y Oración Final</h2><div class="prayer-section"><div class="prayer-text letanias-oracion-box">`;
-            
-            // 1. Letanías
+        function generarLetanias() {
+            let html = `<div class="letanias-oracion-box">`;
             html += `<h4>Letanías de la Santísima Virgen</h4>`;
-            letaniasCompletas.forEach((item) => {
-                if (item.respuesta) {
-                    html += `<p class="invocation-line">${item.linea}</p>`;
-                    html += `<p class="response-line">${item.respuesta}</p>`;
-                } else {
-                    html += `<p class="kyrie-line">${item.linea}</p>`;
-                }
+            letaniasCompletas.forEach(item => {
+                html += item.respuesta
+                    ? `<p class="invocation-line">${item.linea}</p><p class="response-line">${item.respuesta}</p>`
+                    : `<p class="kyrie-line">${item.linea}</p>`;
             });
-
-            // 2. Cordero de Dios
             html += `<strong>Cordero de Dios</strong>`;
-            html += `<p class="invocation-line">${oraciones.cordero.linea1}</p>`;
-            html += `<p class="response-line">${oraciones.cordero.respuesta1}</p>`;
-            html += `<p class="invocation-line">${oraciones.cordero.linea2}</p>`;
-            html += `<p class="response-line">${oraciones.cordero.respuesta2}</p>`;
-            html += `<p class="invocation-line">${oraciones.cordero.linea3}</p>`;
-            html += `<p class="response-line">${oraciones.cordero.respuesta3}</p>`;
-            html += `<p class="invocation-line">${oraciones.cordero.linea4}</p>`;
-            html += `<p class="response-line">${oraciones.cordero.respuesta4}</p>`;
-            
-            // 3. Oración Final
-            html += `<strong>ORACIÓN.</strong>`;
-            html += `<p class="kyrie-line">${oraciones.oracionFinal.replace(/\n/g, '<br>')}</p>`;
-            
-            html += `</div><button class="prayer-button" onclick="markCompleted(this)">✓ Completar esta sección</button></div>`;
-            return html;
-        }
-
-        function crearJaculatoria() {
-            return `
-                <div class="prayer-section">
-                    <h4>Jaculatoria final</h4>
-                    <div class="prayer-text">
-                        <p><strong>${oraciones.jaculatoria.linea}</strong></p>
-                        <p class="response">${oraciones.jaculatoria.respuesta}</p>
-                    </div>
-                    <button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button>
-                </div>
-            `;
-        }
-        
-        function generarCitas() {
-            return citas.map(cita => `
-                <div class="quote-box">
-                    <p>"${cita.texto}".</p>
-                    <p class="quote-author">- ${cita.autor}</p>
-                </div>
-            `).join('');
-        }
-
-        function markCompleted(button) {
-            if (button.classList.contains('completed')) {
-                return;
-            }
-            button.classList.add('completed');
-            button.disabled = true;
-            button.blur();
-            void button.offsetWidth;
-        }
-        
-        // Función para alternar la visibilidad del pasaje bíblico
-        function togglePassage(id) {
-            const passage = document.getElementById(id);
-            const arrow = document.getElementById(`arrow-${id}`);
-            
-            if (passage.style.display === 'none' || passage.style.display === '') {
-                passage.style.display = 'block';
-                arrow.innerHTML = '▲'; // Flecha hacia arriba
-            } else {
-                passage.style.display = 'none';
-                arrow.innerHTML = '▼'; // Flecha hacia abajo
-            }
-        }
-
-        // --- FUNCIÓN CENTRAL: Genera una decena completa (Collapse + Oraciones) (CORREGIDA) ---
-
-        function generarDecenaCompleta(tipo, numero) {
-            const misterioData = todosLosMisterios[tipo][numero];
-            const numeroTexto = ["Primer", "Segundo", "Tercer", "Cuarto", "Quinto"];
-            
-            // Lógica para singularizar el tipo
-            let nombreTipo = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-            if (nombreTipo.endsWith('s') && nombreTipo !== 'Jesus') {
-                nombreTipo = nombreTipo.slice(0, -1);
-            }
-
-            const misterioActual = `${numeroTexto[numero]} Misterio ${nombreTipo}`;
-            const mysteryId = `${tipo}-${numero}`;
-
-            // Lógica de Alternancia de Colores (0-indexado)
-            // Índice 0, 2, 4 (Misterios 1°, 3°, 5° - Impares) -> Normal (ROJO/Guía -> AZUL/Asamblea)
-            // Índice 1, 3 (Misterios 2°, 4° - Pares) -> Inverso (AZUL/Guía -> ROJO/Asamblea)
-            
-            let padrenuestroText, avemariaText, gloriaText;
-
-            if (numero % 2 === 0) { // Índice 0, 2, 4 (Impares)
-                padrenuestroText = oraciones.padrenuestro;
-                avemariaText = oraciones.avemaria;
-                gloriaText = oraciones.gloria;
-            } else { // Índice 1, 3 (Pares)
-                padrenuestroText = oraciones.padrenuestroInverso;
-                avemariaText = oraciones.avemariaInversa;
-                gloriaText = oraciones.gloriaInversa;
-            }
-            
-            let html = `
-                <h2 style="text-transform: capitalize; margin-top: 30px;">${misterioActual}</h2>
-                
-                <div class="mystery-title-clickable" onclick="togglePassage('${mysteryId}')">
-                    <h4>${misterioData.titulo}</h4>
-                    <span id="arrow-${mysteryId}">▼</span>
-                </div>
-                
-                <div class="bible-passage" id="${mysteryId}">
-                    <p>${misterioData.pasaje}</p>
-                    <p style="text-align: right; font-style: normal; margin-top: 10px; color: #764ba2; font-weight: 500;">(Breve pausa de reflexión)</p>
-                </div>
-
-                ${crearSeccionOracion("Padrenuestro", padrenuestroText, "✓ Completar", misterioActual)}
-                ${crear10Avemarias(misterioActual, avemariaText)}
-                ${crearSeccionOracion("Gloria", gloriaText, "✓ Completar", misterioActual)}
-                ${crearSeccionOracion("Oh, Jesús Mío", oraciones.ohJesus, "✓ Completar", misterioActual)}
-            `;
-            return html;
-        }
-
-
-        // --- FUNCIÓN DE CONTROL: Genera las 5 decenas del tipo seleccionado ---
-
-        function mostrarMisteriosPorTipo(tipoSeleccionado) {
-            const misterioDiv = document.getElementById('misterio-seleccionado');
-            
-            const botonesTipo = document.querySelectorAll('.mystery-type-button');
-            botonesTipo.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.type === tipoSeleccionado) {
-                    btn.classList.add('active');
-                }
+            oraciones.cordero.forEach(([v, r]) => {
+                html += `<p class="invocation-line">${v}</p><p class="response-line">${r}</p>`;
             });
-
-            const misteriosDelTipo = todosLosMisterios[tipoSeleccionado];
-            const nombreMisterioPlural = misterioTipos[tipoSeleccionado].nombre;
-            const diasMisterio = misterioTipos[tipoSeleccionado].dias;
-            
-            let html = `
-                <div class="mystery-box" style="margin-top: 20px;">
-                    <p style="text-align: center; font-weight: bold; color: #764ba2; font-size: 1.2em;">
-                        ROSARIO DEL DÍA: MISTERIOS ${nombreMisterioPlural.toUpperCase()}
-                    </p>
-                    <p style="text-align: center; font-style: italic; color: #555;">
-                        (Se rezan los ${diasMisterio})
-                    </p>
-                </div>
-                <div id="decenas-completas">
-            `;
-
-            // Generar las cinco decenas del tipo seleccionado
-            misteriosDelTipo.forEach((misterio, index) => {
-                html += generarDecenaCompleta(tipoSeleccionado, index);
-            });
-            
+            html += `<strong>Oración</strong><p class="kyrie-line">${oraciones.oracionFinal}</p>`;
             html += `</div>`;
-            misterioDiv.innerHTML = html;
-            
-            misterioDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return `
+                <h2 id="letanias-y-oracion-final">Letanías, Cordero de Dios y Oración final</h2>
+                <div class="prayer-section" data-section="opt-let">
+                    <div class="prayer-text">${html}</div>
+                    ${botonPaso("opt-let", "Completar esta sección")}
+                </div>`;
         }
 
+        function generarMesMaria() {
+            return `
+                <h2 id="mes-maria">Oraciones del Mes de María${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</h2>
+                ${seccion({ id: "opt-mm1", titulo: "Oración inicial del Mes de María", cuerpo: `<p>${oraciones.mesMaria.inicial}</p>` })}
+                ${seccion({ id: "opt-mm2", titulo: "Oración final del Mes de María", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })}`;
+        }
 
-        // --- FUNCIÓN DE INICIALIZACIÓN PRINCIPAL (Crea las secciones HTML para la carga) ---
+        // Mes de María (Chile): 8 de noviembre al 8 de diciembre
+        const mesDeMariaActivo = (hoy.getMonth() === 10 && hoy.getDate() >= 8) || (hoy.getMonth() === 11 && hoy.getDate() <= 8);
 
-        function generarRosarioEstatico() {
-            let inicioHtml = '';
-            
-            // 1. Oraciones iniciales
-            inicioHtml += crearSeccionOracion("Inicio", oraciones.inicio);
-            inicioHtml += crearSeccionOracion("Bajo tu amparo", oraciones.bajoTuAmparo);
-            inicioHtml += crearSeccionInvocaciones(oraciones.invocaciones);
-            
-            
-            // 2. Oraciones finales (después de la decena)
-            let finalesHtml = '';
+        function generarFinales() {
+            let html = `<h2>Oraciones después de las decenas</h2>`;
+            html += seccion({ id: "fin-salve", titulo: "Salve a la Virgen", cuerpo: `<p>${oraciones.salve}</p>` });
+            html += seccion({ id: "fin-jac", titulo: "Jaculatoria final", cuerpo: versiculos([oraciones.jaculatoria]) });
 
-            finalesHtml += `<h2 style="margin-top: 40px;">Oraciones después de la Decena</h2>`;
-            finalesHtml += `<div class="prayer-section"><h4>Salve a la Virgen</h4><div class="prayer-text"><p><strong>${oraciones.salve}</strong></p></div><button class="prayer-button" onclick="markCompleted(this)">✓ Completar</button></div>`;
-            finalesHtml += crearJaculatoria();
-            
-            // Por las intenciones del Santo Padre
-            finalesHtml += `<h2>Por las intenciones del Santo Padre</h2>`;
-            // Aquí usamos la versión normal para las intenciones del Papa, ya que el Padre Nuestro se dice completo.
-            finalesHtml += crearSeccionOracion("Padrenuestro", oraciones.padrenuestro); 
-            finalesHtml += crear3Avemarias();
-            finalesHtml += crearSeccionOracion("Santiguación final", oraciones.santiguacion);
-            
-            // Sección opcional
-            finalesHtml += `
-                <div class="optional-section">
+            html += `<h2>Por las intenciones del Santo Padre</h2>`;
+            html += seccion({ id: "fin-pn", titulo: "Padrenuestro", cuerpo: textoAlternado(oraciones.padrenuestro) });
+            html += seccion({ id: "fin-am3", titulo: "3 Avemarías", cuerpo: textoAlternado(oraciones.avemaria), control: contador("fin-am3", 3) });
+            html += seccion({ id: "fin-sant", titulo: "Santiguación final", cuerpo: `<p>${oraciones.santiguacion}</p>` });
+
+            const itemLetanias = `<li><a href="#letanias-y-oracion-final">→ Letanías, Cordero de Dios y Oración final</a></li>`;
+            const itemMesMaria = `<li><a href="#mes-maria">→ Oraciones del Mes de María</a>${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</li>`;
+
+            html += `
+                <div class="optional-section" id="opcionales">
                     <div class="optional-header">📿 Oraciones opcionales</div>
-                    <p style="margin-bottom: 20px; color: #666;">Las siguientes oraciones son opcionales y pueden rezarse al final del Rosario:</p>
-                    
+                    <p style="color: var(--muted);">Las siguientes oraciones son opcionales y pueden rezarse al final del Rosario:</p>
                     <div class="optional-index">
                         <strong>Índice de oraciones:</strong>
-                        <ul>
-                            <li><a href="#letanias-y-oracion-final">→ Letanías de la Santísima Virgen, Cordero de Dios y Oración Final</a></li>
-                            <li><a href="#mes-maria">→ Oraciones del Mes de María</a></li>
-                        </ul>
+                        <ul>${mesDeMariaActivo ? itemMesMaria + itemLetanias : itemLetanias + itemMesMaria}</ul>
                     </div>
-            `;
-            
-            finalesHtml += crearLetanias();
-            
-            // Oraciones del Mes de María
-            finalesHtml += `<h2 id="mes-maria" style="margin-top: 30px;">Oraciones del Mes de María</h2>`;
-            finalesHtml += crearSeccionOracion("Oración inicial del Mes de María", oraciones.mesMaria.inicial);
-            finalesHtml += crearSeccionOracion("Oración final del Mes de María", oraciones.mesMaria.final);
-            
-            finalesHtml += `</div>`; // Cierre de optional-section
-
-            // Retornar las secciones separadas
-            return { inicio: inicioHtml, finales: finalesHtml };
+                    ${mesDeMariaActivo ? generarMesMaria() + generarLetanias() : generarLetanias() + generarMesMaria()}
+                </div>`;
+            return html;
         }
 
-        // Inicializar la aplicación (Cargando el contenido en los contenedores correctos)
-        document.addEventListener('DOMContentLoaded', function() {
-            const rosarioContent = generarRosarioEstatico();
-            
-            // 1. Cargar Oraciones Iniciales
-            document.getElementById('inicio-rosario').innerHTML = rosarioContent.inicio;
-            
-            // 2. Cargar Oraciones Finales
-            document.getElementById('fin-rosario').innerHTML = rosarioContent.finales;
-            
-            // 3. Cargar Citas
-            document.getElementById('quotes-content').innerHTML = generarCitas();
-            
-            // 4. Cargar Botones de selección de tipo
-            const mysteryTypesDiv = document.getElementById('mystery-types');
-            let typeButtonsHtml = '';
-            for (const key in misterioTipos) {
-                const data = misterioTipos[key];
-                typeButtonsHtml += `
-                    <button class="prayer-button mystery-type-button" data-type="${key}" onclick="mostrarMisteriosPorTipo('${key}')">
-                        Misterios ${data.nombre} (${data.dias})
-                    </button>
-                `;
+        function generarCitas() {
+            return citas.map(c => `
+                <div class="quote-box">
+                    <p>«${c.texto}»</p>
+                    <p class="quote-author">— ${c.autor}</p>
+                </div>`).join("");
+        }
+
+        function generarSelector() {
+            return Object.entries(misterioTipos).map(([key, t]) => `
+                <button class="mystery-type-button" data-tipo="${key}" aria-pressed="false">
+                    ${key === tipoDeHoy ? '<span class="badge-hoy">Hoy</span>' : ""}
+                    <span class="mt-name">${t.nombre}</span>
+                    <span class="mt-days">${t.dias}</span>
+                </button>`).join("");
+        }
+
+        function renderDecenas() {
+            let html = "";
+            for (let n = 0; n < 5; n++) html += generarDecena(state.tipo, n);
+            document.getElementById("decenas-completas").innerHTML = html;
+            const t = misterioTipos[state.tipo];
+            document.getElementById("rosario-del-dia").innerHTML =
+                `<strong>Misterios ${t.nombre}</strong>Se rezan los ${t.dias}${state.tipo !== tipoDeHoy ? " · hoy no corresponden" : ""}`;
+        }
+
+        // --- ACTUALIZACIÓN DE LA INTERFAZ SEGÚN EL ESTADO ---
+
+        function refrescar() {
+            // Botones de paso
+            document.querySelectorAll("[data-step]").forEach(btn => {
+                const hecho = estaHecho(btn.dataset.step);
+                btn.classList.toggle("completed", hecho);
+                btn.setAttribute("aria-pressed", hecho);
+                btn.textContent = hecho ? "✓ Completado" : `✓ ${btn.dataset.label}`;
+                btn.title = hecho ? "Toca de nuevo para desmarcar" : "";
+            });
+
+            // Contadores
+            document.querySelectorAll("[data-counter]").forEach(el => {
+                const id = el.dataset.counter;
+                const max = +el.dataset.max;
+                const c = state.counts[id] || 0;
+                const lleno = c >= max;
+                el.querySelectorAll(".bead").forEach(b => {
+                    const i = +b.dataset.bead;
+                    b.classList.toggle("on", i <= c && !lleno);
+                    b.classList.toggle("done-all", lleno);
+                    b.setAttribute("aria-pressed", i <= c);
+                });
+                el.querySelector(".counter-value").textContent = `${c} / ${max}`;
+                const main = el.querySelector("[data-counter-main]");
+                main.disabled = lleno;
+                main.classList.toggle("completed", lleno);
+                main.textContent = lleno ? `✓ ${max} Avemarías` : "+1 Avemaría";
+                el.querySelector("[data-counter-undo]").disabled = c === 0;
+            });
+
+            // Secciones completadas
+            document.querySelectorAll("[data-section]").forEach(s => s.classList.toggle("is-done", estaHecho(s.dataset.section)));
+
+            // Decenas
+            const actual = decenaActual();
+            document.querySelectorAll("[data-decena]").forEach(sec => {
+                const n = +sec.dataset.decena;
+                const abierta = decenaAbierta.has(n) ? decenaAbierta.get(n) : n === actual;
+                sec.classList.toggle("is-complete", decenaCompleta(n));
+                sec.classList.toggle("is-current", n === actual);
+                sec.querySelector(".decena-num").textContent = decenaCompleta(n) ? "✓" : n + 1;
+                sec.querySelector(".decena-header").setAttribute("aria-expanded", abierta);
+                sec.querySelector(".decena-body").hidden = !abierta;
+            });
+
+            // Selector
+            document.querySelectorAll("[data-tipo]").forEach(b => {
+                const activo = b.dataset.tipo === state.tipo;
+                b.classList.toggle("active", activo);
+                b.setAttribute("aria-pressed", activo);
+            });
+
+            refrescarProgreso();
+        }
+
+        function refrescarProgreso() {
+            const todos = [...PASOS_INICIO, ...[0, 1, 2, 3, 4].flatMap(PASOS_DECENA), ...PASOS_FIN];
+            let total = 0, hecho = 0;
+            todos.forEach(id => {
+                const max = maxDe(id);
+                total += max || 1;
+                hecho += max ? Math.min(state.counts[id] || 0, max) : (state.done[id] ? 1 : 0);
+            });
+            document.getElementById("progress-fill").style.width = `${(hecho / total) * 100}%`;
+
+            const aves = [0, 1, 2, 3, 4].reduce((s, n) => s + Math.min(state.counts[`d${n}-am`] || 0, 10), 0);
+            const actual = decenaActual();
+            let texto;
+            if (hecho === total) texto = "✓ Rosario completado";
+            else if (!PASOS_INICIO.every(estaHecho) && actual === 0 && aves === 0) texto = "Oraciones iniciales";
+            else if (actual < 5) texto = `Decena ${actual + 1}/5 · ${aves}/50 Aves`;
+            else texto = "Oraciones finales";
+            document.getElementById("progress-label").textContent = texto;
+        }
+
+        // --- ACCIONES ---
+
+        function cambiarTipo(tipo, desplazar = true) {
+            if (tipo === state.tipo) {
+                if (desplazar) irA("decenas");
+                return;
             }
-            mysteryTypesDiv.innerHTML = typeButtonsHtml;
+            const hayAvance = [0, 1, 2, 3, 4].some(n => PASOS_DECENA(n).some(id => state.done[id] || state.counts[id]));
+            if (hayAvance && !confirm("Cambiar de misterio reiniciará el avance de las decenas. ¿Continuar?")) return;
+            [0, 1, 2, 3, 4].forEach(n => PASOS_DECENA(n).forEach(id => { delete state.done[id]; delete state.counts[id]; }));
+            state.tipo = tipo;
+            decenaAbierta.clear();
+            guardarEstado();
+            renderDecenas();
+            refrescar();
+            if (desplazar) irA("decenas");
+        }
+
+        function irA(destino) {
+            let el;
+            if (destino === "top") { window.scrollTo({ top: 0 }); return; }
+            if (destino === "decena" || destino === "actual") {
+                const n = decenaActual();
+                if (destino === "actual" && n === 0 && !PASOS_INICIO.every(estaHecho)) {
+                    el = document.querySelector(`[data-section="${PASOS_INICIO.find(id => !estaHecho(id))}"]`);
+                } else if (n < 5) {
+                    decenaAbierta.delete(n);
+                    refrescar();
+                    el = document.getElementById(`decena-${n}`);
+                } else {
+                    el = document.getElementById("fin-rosario");
+                }
+            } else {
+                el = document.getElementById(destino);
+            }
+            if (el) el.scrollIntoView({ block: "start" });
+        }
+
+        // Tras un cambio: si se acaba de completar una decena, plegarla y pasar a la siguiente.
+        function despuesDeCambio(id, decenaAntes) {
+            const m = /^d(\d)-/.exec(id);
+            guardarEstado();
+            if (m) {
+                const n = +m[1];
+                if (!decenaAntes && decenaCompleta(n)) {
+                    decenaAbierta.delete(n);
+                    decenaAbierta.delete(n + 1);
+                    refrescar();
+                    const sig = n < 4 ? document.getElementById(`decena-${n + 1}`) : document.getElementById("fin-rosario");
+                    setTimeout(() => sig.scrollIntoView({ block: "start" }), 250);
+                    return;
+                }
+            }
+            refrescar();
+        }
+
+        function decenaDe(id) {
+            const m = /^d(\d)-/.exec(id);
+            return m ? decenaCompleta(+m[1]) : false;
+        }
+
+        function vibrar() { try { navigator.vibrate && navigator.vibrate(12); } catch (e) { } }
+
+        // --- Mantener la pantalla encendida mientras se reza ---
+        let wakeLock = null;
+        let rezando = false;
+        async function mantenerPantalla() {
+            rezando = true;
+            if (!("wakeLock" in navigator) || wakeLock || document.visibilityState !== "visible") return;
+            try {
+                wakeLock = await navigator.wakeLock.request("screen");
+                wakeLock.addEventListener("release", () => { wakeLock = null; });
+            } catch (e) { /* no soportado o denegado */ }
+        }
+        document.addEventListener("visibilitychange", () => {
+            if (rezando && document.visibilityState === "visible") mantenerPantalla();
         });
+
+        // --- Tamaño de letra ---
+        function aplicarTamano(px) {
+            document.documentElement.style.setProperty("--fs", px + "px");
+            try { localStorage.setItem(FONT_KEY, px); } catch (e) { }
+        }
+        function cambiarTamano(delta) {
+            const actual = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--fs")) || 18;
+            let i = TAMANOS.indexOf(actual);
+            if (i === -1) i = 3;
+            aplicarTamano(TAMANOS[Math.max(0, Math.min(TAMANOS.length - 1, i + delta))]);
+        }
+
+        // --- Delegación de eventos ---
+        document.addEventListener("click", e => {
+            const t = e.target.closest("button");
+            if (!t) return;
+
+            if (t.dataset.step) {
+                const id = t.dataset.step;
+                const antes = decenaDe(id);
+                if (state.done[id]) delete state.done[id]; else state.done[id] = true;
+                mantenerPantalla();
+                despuesDeCambio(id, antes);
+            } else if (t.hasAttribute("data-counter-main") || t.hasAttribute("data-counter-undo") || t.dataset.bead) {
+                const box = t.closest("[data-counter]");
+                const id = box.dataset.counter;
+                const max = +box.dataset.max;
+                const antes = decenaDe(id);
+                let c = state.counts[id] || 0;
+                if (t.dataset.bead) {
+                    const i = +t.dataset.bead;
+                    c = (i === c) ? i - 1 : i; // tocar la última cuenta marcada la desmarca
+                } else if (t.hasAttribute("data-counter-main")) {
+                    c = Math.min(max, c + 1);
+                } else {
+                    c = Math.max(0, c - 1);
+                }
+                state.counts[id] = c;
+                vibrar();
+                mantenerPantalla();
+                despuesDeCambio(id, antes);
+            } else if (t.dataset.toggleDecena !== undefined) {
+                const n = +t.dataset.toggleDecena;
+                decenaAbierta.set(n, t.getAttribute("aria-expanded") !== "true");
+                refrescar();
+            } else if (t.dataset.passage) {
+                const p = document.getElementById(t.dataset.passage);
+                p.hidden = !p.hidden;
+                t.setAttribute("aria-expanded", !p.hidden);
+                t.textContent = p.hidden ? "📖 Leer el pasaje bíblico" : "📖 Ocultar el pasaje bíblico";
+            } else if (t.dataset.tipo) {
+                cambiarTipo(t.dataset.tipo);
+            } else if (t.dataset.jump) {
+                irA(t.dataset.jump);
+            } else if (t.dataset.font) {
+                cambiarTamano(+t.dataset.font);
+            } else if (t.id === "reset-btn") {
+                if (confirm("¿Reiniciar el rosario? Se borrará el avance de hoy.")) {
+                    state = estadoNuevo(state.tipo);
+                    decenaAbierta.clear();
+                    guardarEstado();
+                    refrescar();
+                    window.scrollTo({ top: 0 });
+                }
+            }
+        });
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const px = parseInt(localStorage.getItem(FONT_KEY));
+                if (TAMANOS.includes(px)) aplicarTamano(px);
+            } catch (e) { }
+
+            if (mesDeMariaActivo) {
+                document.getElementById("mes-maria-aviso").innerHTML =
+                    `<div class="notice">🌸 Estamos en el <strong>Mes de María</strong> (8 de noviembre al 8 de diciembre). <a href="#mes-maria">Ir a sus oraciones →</a></div>`;
+            }
+
+            document.getElementById("mystery-types").innerHTML = generarSelector();
+            document.getElementById("inicio-contenido").innerHTML = generarInicio();
+            renderDecenas();
+            document.getElementById("fin-rosario").innerHTML = generarFinales();
+            document.getElementById("quotes-content").innerHTML = generarCitas();
+            refrescar();
+        });
+
+        // --- Aplicación instalable / sin conexión ---
+        if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+            window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => { }));
+        }
     </script>
 </body>
 </html>

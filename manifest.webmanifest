@@ -1,0 +1,14 @@
+{
+    "name": "Cómo rezar el Santo Rosario",
+    "short_name": "Santo Rosario",
+    "description": "Guía para rezar el Santo Rosario en comunidad, con Guía y Asamblea.",
+    "lang": "es",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#f3eee4",
+    "theme_color": "#34508c",
+    "icons": [
+        { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    ]
+}
