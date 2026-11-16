@@ -162,7 +162,7 @@
             box-shadow: var(--shadow);
         }
         @media (max-width: 600px) {
-            .container { margin: 0; border-radius: 0; padding: 22px 14px; box-shadow: none; }
+            .container { margin: 0; border-radius: 0; box-shadow: none; }
         }
 
         [id] { scroll-margin-top: 104px; }
@@ -275,12 +275,13 @@
             border-radius: 999px;
         }
         .rosario-del-dia { text-align: center; margin: 18px 0 6px; color: var(--muted); font-style: italic; }
+        .rosario-del-dia .fecha-hoy { display: block; font-style: normal; font-weight: 600; color: var(--gold); margin: 2px 0; }
         .rosario-del-dia strong { display: block; color: var(--accent); font-style: normal; font-size: 1.1em; letter-spacing: .03em; }
 
         /* ---------- Secciones de oración ---------- */
         .prayer-section {
-            margin: 14px 0;
-            padding: 16px 14px;
+            margin: 12px 0;
+            padding: 14px 12px;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -433,6 +434,36 @@
         .letanias-oracion-box strong { display: block; margin: 20px 0 8px; color: var(--accent-strong); font-size: 1.05em; }
 
         .final-actions { text-align: center; margin-top: 30px; }
+
+        /* ---------- Móvil: espacios compactos para mostrar más texto ---------- */
+        @media (max-width: 600px) {
+            .topbar-row { padding: 4px 6px; }
+            .container { padding: 12px 6px 20px; }
+            h1 { font-size: 1.75em; margin-bottom: 10px; }
+            h2 { margin-top: 22px; margin-bottom: 8px; padding-bottom: 4px; font-size: 1.25em; }
+            .legend, .notice { padding: 8px 10px; margin-bottom: 10px; }
+            .quote-box { padding: 10px 12px; margin: 12px 0; }
+            .prayer-section { margin: 8px 0; padding: 10px 6px; border-radius: 10px; }
+            .prayer-section h4 { padding: 0 4px; }
+            .mystery-subtitle { padding: 0 4px; margin-bottom: 4px; }
+            .prayer-text { padding: 8px 8px; margin: 6px 0 8px; border-left-width: 3px; }
+            .prayer-button { padding: 8px 18px; }
+            .counter { gap: 8px; }
+            .counter-main { padding: 11px 18px; }
+            .decena { margin: 8px 0; border-radius: 12px; }
+            .decena-header { padding: 10px 8px; gap: 8px; }
+            .decena-body { padding: 0 4px 4px; }
+            .passage-toggle { padding: 6px 10px; }
+            .bible-passage { padding: 8px 10px; }
+            .optional-section { padding: 12px 4px; margin: 20px 0; border-left-width: 3px; }
+            .optional-index { padding: 10px; margin: 10px 0; }
+            .mystery-selection-controls { gap: 8px; }
+            .mystery-type-button { padding: 10px 6px; }
+            .rosario-del-dia { margin: 12px 0 4px; }
+            .response-line { margin-left: 18px !important; }
+            .final-actions { margin-top: 18px; }
+            [id] { scroll-margin-top: 92px; }
+        }
 
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
@@ -683,6 +714,9 @@
         const hoy = new Date();
         const fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
         const tipoDeHoy = Object.keys(misterioTipos).find(k => misterioTipos[k].diasSemana.includes(hoy.getDay()));
+        const capitalizar = s => s.charAt(0).toUpperCase() + s.slice(1);
+        const fechaLarga = capitalizar(hoy.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
+        const fechaCorta = hoy.toLocaleDateString("es", { day: "numeric", month: "short" }).replace(".", "");
 
         function estadoNuevo(tipo) {
             return { fecha: fechaHoy, tipo: tipo || tipoDeHoy, done: {}, counts: {} };
@@ -864,7 +898,7 @@
         function generarSelector() {
             return Object.entries(misterioTipos).map(([key, t]) => `
                 <button class="mystery-type-button" data-tipo="${key}" aria-pressed="false">
-                    ${key === tipoDeHoy ? '<span class="badge-hoy">Hoy</span>' : ""}
+                    ${key === tipoDeHoy ? `<span class="badge-hoy">Hoy · ${fechaCorta}</span>` : ""}
                     <span class="mt-name">${t.nombre}</span>
                     <span class="mt-days">${t.dias}</span>
                 </button>`).join("");
@@ -876,7 +910,7 @@
             document.getElementById("decenas-completas").innerHTML = html;
             const t = misterioTipos[state.tipo];
             document.getElementById("rosario-del-dia").innerHTML =
-                `<strong>Misterios ${t.nombre}</strong>Se rezan los ${t.dias}${state.tipo !== tipoDeHoy ? " · hoy no corresponden" : ""}`;
+                `<strong>Misterios ${t.nombre}</strong><span class="fecha-hoy">${fechaLarga}</span>Se rezan los ${t.dias}${state.tipo !== tipoDeHoy ? " · hoy no corresponden" : ""}`;
         }
 
         // --- ACTUALIZACIÓN DE LA INTERFAZ SEGÚN EL ESTADO ---
