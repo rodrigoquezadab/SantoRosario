@@ -710,6 +710,10 @@
 
         <div id="mm-despues" data-ver="mes"></div>
 
+        <div id="santiguacion-final" data-ver="rosario mes"></div>
+
+        <div id="opcionales-final" data-ver="rosario mes"></div>
+
         <div id="cantos" data-ver="cantos"></div>
 
         <div data-ver="rosario mes">
@@ -895,9 +899,7 @@
 
         // --- PASOS QUE CUENTAN PARA EL PROGRESO ---
         // Un paso simple vale 1; un contador vale 1 por cada Avemaría.
-        const PASOS_INICIO = ["ini-senal", "ini-amparo", "ini-invoc"];
         const PASOS_DECENA = n => [`d${n}-pn`, `d${n}-am`, `d${n}-gl`, `d${n}-oj`];
-        const PASOS_FIN = ["fin-salve", "fin-jac", "fin-pn", "fin-am3", "fin-gl", "fin-sant"];
         const maxDe = id => id === "fin-am3" ? 3 : (id.endsWith("-am") ? 10 : 0);
 
         // --- ESTADO (se guarda por día en este dispositivo) ---
@@ -906,6 +908,11 @@
         const TAMANOS = [15, 16, 17, 18, 20, 22, 24];
 
         const hoy = new Date();
+        // Mes de María (Chile): 8 de noviembre al 8 de diciembre
+        const mesDeMariaActivo = (hoy.getMonth() === 10 && hoy.getDate() >= 8) || (hoy.getMonth() === 11 && hoy.getDate() <= 8);
+        // Durante el Mes de María, sus oraciones inicial y final son parte obligatoria del Rosario.
+        const PASOS_INICIO = ["ini-senal", ...(mesDeMariaActivo ? ["ini-mm"] : []), "ini-amparo", "ini-invoc"];
+        const PASOS_FIN = ["fin-salve", "fin-jac", "fin-pn", "fin-am3", "fin-gl", ...(mesDeMariaActivo ? ["fin-mm"] : []), "fin-sant"];
         const fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
         const tipoDeHoy = Object.keys(misterioTipos).find(k => misterioTipos[k].diasSemana.includes(hoy.getDay()));
         const capitalizar = s => s.charAt(0).toUpperCase() + s.slice(1);
@@ -987,6 +994,8 @@
         function generarInicio() {
             return [
                 seccion({ id: "ini-senal", titulo: "Señal de la Cruz", cuerpo: `<p>${oraciones.inicio}</p>` }),
+                // En la vista «Mes de María» esta oración ya está en «Inicio», antes del Rosario.
+                mesDeMariaActivo ? `<div data-ver="rosario">${seccion({ id: "ini-mm", titulo: "Oración inicial del Mes de María", cuerpo: `<p>${oraciones.mesMaria.inicial}</p>` })}</div>` : "",
                 seccion({ id: "ini-amparo", titulo: "Bajo tu amparo", cuerpo: `<p>${oraciones.bajoTuAmparo}</p>` }),
                 seccion({ id: "ini-invoc", titulo: "Invocaciones iniciales", cuerpo: versiculos(oraciones.invocaciones) })
             ].join("");
@@ -1043,18 +1052,6 @@
                 </div>`;
         }
 
-        function generarMesMaria() {
-            // En la vista «Mes de María» estas oraciones ya están integradas en el día.
-            return `<div data-ver="rosario">
-                <h2 id="mes-maria">Oraciones del Mes de María${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</h2>
-                ${seccion({ id: "opt-mm1", titulo: "Oración inicial del Mes de María", cuerpo: `<p>${oraciones.mesMaria.inicial}</p>` })}
-                ${seccion({ id: "opt-mm2", titulo: "Oración final del Mes de María", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })}
-                </div>`;
-        }
-
-        // Mes de María (Chile): 8 de noviembre al 8 de diciembre
-        const mesDeMariaActivo = (hoy.getMonth() === 10 && hoy.getDate() >= 8) || (hoy.getMonth() === 11 && hoy.getDate() <= 8);
-
         function generarFinales() {
             let html = `<h2>Oraciones después de las decenas</h2>`;
             html += seccion({ id: "fin-salve", titulo: "Salve a la Virgen", cuerpo: `<p>${oraciones.salve}</p>` });
@@ -1064,22 +1061,34 @@
             html += seccion({ id: "fin-pn", titulo: "Padrenuestro", cuerpo: textoAlternado(oraciones.padrenuestro) });
             html += seccion({ id: "fin-am3", titulo: "3 Avemarías", cuerpo: textoAlternado(oraciones.avemaria), control: contador("fin-am3", 3) });
             html += seccion({ id: "fin-gl", titulo: "Gloria", cuerpo: textoAlternado(oraciones.gloria) });
-            html += seccion({ id: "fin-sant", titulo: "Santiguación final", cuerpo: `<p>${oraciones.santiguacion}</p>` });
+            // En la vista «Mes de María» la oración final va donde la pone el folleto: tras las peticiones.
+            if (mesDeMariaActivo) {
+                html += `<div data-ver="rosario"><h2 id="mm-oracion-final">Oración final del Mes de María</h2>
+                    ${seccion({ id: "fin-mm", titulo: "Oración final del Mes de María", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })}</div>`;
+            }
+            return html;
+        }
 
+        // La santiguación cierra todo: va justo antes de las oraciones opcionales
+        // (en la vista «Mes de María», después de la lectura y el canto final).
+        function generarSantiguacion() {
+            return seccion({ id: "fin-sant", titulo: "Santiguación final", cuerpo: `<p>${oraciones.santiguacion}</p>` });
+        }
+
+        // Oraciones opcionales: van al final de todo (también después de la lectura y el canto final en la vista «Mes de María»).
+        function generarOpcionales() {
             const itemLetanias = `<li><a href="#letanias-y-oracion-final">→ Letanías, Cordero de Dios y Oración final</a></li>`;
-            const itemMesMaria = `<li data-ver="rosario"><a href="#mes-maria">→ Oraciones del Mes de María</a>${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</li>`;
 
-            html += `
+            return `
                 <div class="optional-section" id="opcionales">
                     <div class="optional-header">📿 Oraciones opcionales</div>
                     <p style="color: var(--muted);">Las siguientes oraciones son opcionales y pueden rezarse al final del Rosario:</p>
                     <div class="optional-index">
                         <strong>Índice de oraciones:</strong>
-                        <ul>${mesDeMariaActivo ? itemMesMaria + itemLetanias : itemLetanias + itemMesMaria}</ul>
+                        <ul>${itemLetanias}</ul>
                     </div>
-                    ${mesDeMariaActivo ? generarMesMaria() + generarLetanias() : generarLetanias() + generarMesMaria()}
+                    ${generarLetanias()}
                 </div>`;
-            return html;
         }
 
         function generarCitas() {
@@ -1208,7 +1217,7 @@
             if (destino === "decena" || destino === "actual") {
                 const n = decenaActual();
                 if (destino === "actual" && n === 0 && !PASOS_INICIO.every(estaHecho)) {
-                    el = document.querySelector(`[data-section="${PASOS_INICIO.find(id => !estaHecho(id))}"]`);
+                    el = [...document.querySelectorAll(`[data-section="${PASOS_INICIO.find(id => !estaHecho(id))}"]`)].find(e => e.offsetParent);
                 } else if (n < 5) {
                     decenaAbierta.delete(n);
                     refrescar();
@@ -1402,7 +1411,9 @@
                 ${bloqueCanto("Canto inicial", MM_CANTOS[(mmIndice * 2) % nC])}
                 ${bloqueMM("Saludo", vr("En el nombre del Padre, y del Hijo, y del Espíritu Santo.", "Amén."))}
                 ${bloqueMM("Motivación", parrafos(d.motivacion))}
-                ${bloqueMM("Oración inicial", `<p>${oraciones.mesMaria.inicial}</p>`)}
+                ${mesDeMariaActivo
+                    ? seccion({ id: "ini-mm", titulo: "Oración inicial", cuerpo: `<p>${oraciones.mesMaria.inicial}</p>` })
+                    : bloqueMM("Oración inicial", `<p>${oraciones.mesMaria.inicial}</p>`)}
                 <h2>Santo Rosario</h2>`;
 
             const peticiones = [...d.peticiones, "Oremos al Señor por nuestras necesidades y las de nuestra comunidad…"]
@@ -1416,7 +1427,9 @@
                     `<ul class="mm-lista">${d.preguntas.map(p => `<li>${p}</li>`).join("")}</ul>`)}
                 ${bloqueMM("Peticiones", peticiones)}
                 <h2>Conclusión</h2>
-                ${bloqueMM("Oración final", `<p>${oraciones.mesMaria.final}</p>`)}
+                ${mesDeMariaActivo
+                    ? seccion({ id: "fin-mm", titulo: "Oración final", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })
+                    : bloqueMM("Oración final", `<p>${oraciones.mesMaria.final}</p>`)}
                 ${bloqueCanto("Canto final", MM_CANTOS[(mmIndice * 2 + 1) % nC])}
                 ${d.celebracion ? renderCelebracion() : ""}
                 <div class="mm-pie">
@@ -1610,6 +1623,8 @@
             document.getElementById("inicio-contenido").innerHTML = generarInicio();
             renderDecenas();
             document.getElementById("fin-rosario").innerHTML = generarFinales();
+            document.getElementById("santiguacion-final").innerHTML = generarSantiguacion();
+            document.getElementById("opcionales-final").innerHTML = generarOpcionales();
             document.getElementById("quotes-content").innerHTML = generarCitas();
             refrescar();
 
