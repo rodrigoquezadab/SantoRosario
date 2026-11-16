@@ -559,6 +559,51 @@
             padding: 10px 12px;
         }
         .cantos-lista .canto-link::before { content: "▶ "; font-size: .8em; }
+        div.cantos-lista { display: grid; gap: 8px; }
+
+        /* Tarjeta de canto: la letra es lo principal */
+        .canto {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .canto summary {
+            cursor: pointer;
+            padding: 10px 12px;
+            list-style: none;
+            position: relative;
+            padding-right: 34px;
+        }
+        .canto summary::-webkit-details-marker { display: none; }
+        .canto summary::after {
+            content: "▾";
+            position: absolute;
+            right: 12px;
+            top: 10px;
+            color: var(--accent);
+            font-size: 1.2em;
+            transition: transform .2s;
+        }
+        .canto[open] summary::after { transform: rotate(180deg); }
+        .canto-titulo { display: block; font-weight: 700; color: var(--accent-strong); }
+        .sin-letra { font: 600 11px/1 system-ui, sans-serif; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 3px 7px; display: inline-block; margin-top: 4px; }
+        .canto-cuerpo { padding: 0 12px 12px; }
+        .letra { font-size: 1.05em; line-height: 1.55; }
+        .letra p + p { margin-top: .9em; }
+        .canto-acciones { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+        .canto-escuchar { color: var(--muted); font-size: .9em; }
+        .editor-letra textarea {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+            line-height: 1.5;
+            resize: vertical;
+        }
 
         /* ---------- Móvil: espacios compactos para mostrar más texto ---------- */
         @media (max-width: 600px) {
@@ -678,6 +723,7 @@
     </main>
 
     <script src="mes-maria.js"></script>
+    <script src="cantos-letras.js"></script>
     <script>
         // --- ALMACENAMIENTO DE ORACIONES Y MISTERIOS ---
 
@@ -1218,14 +1264,56 @@
             return `<a class="canto-link" href="${c.url}" target="_blank" rel="noopener">${c.titulo}</a>${c.autor ? `<span class="canto-autor">${c.autor}</span>` : ""}`;
         }
 
+        // --- Letras de los cantos: primero las guardadas en este dispositivo, luego cantos-letras.js ---
+        const LETRAS_KEY = "rosario-letras";
+        const escapar = s => s.replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+        function letrasLocales() {
+            try { return JSON.parse(localStorage.getItem(LETRAS_KEY)) || {}; } catch (e) { return {}; }
+        }
+        function letraDe(titulo) {
+            const local = letrasLocales()[titulo];
+            if (local) return { texto: local, local: true };
+            const comun = (typeof MM_LETRAS !== "undefined" && MM_LETRAS[titulo]) || "";
+            return { texto: comun, local: false };
+        }
+        function guardarLetra(titulo, texto) {
+            const todas = letrasLocales();
+            if (texto.trim()) todas[titulo] = texto.trim(); else delete todas[titulo];
+            try { localStorage.setItem(LETRAS_KEY, JSON.stringify(todas)); } catch (e) { alert("No se pudo guardar en este dispositivo."); }
+        }
+        const htmlLetra = texto => `<div class="letra">${escapar(texto).split(/\n\s*\n/).map(e => `<p>${e.replace(/\n/g, "<br>")}</p>`).join("")}</div>`;
+
+        // Tarjeta de un canto: título, letra (lo principal) y, al final, el enlace para escucharlo
+        function tarjetaCanto(c, abierta = false) {
+            const i = MM_CANTOS.indexOf(c);
+            const { texto, local } = letraDe(c.titulo);
+            return `
+                <details class="canto"${abierta ? " open" : ""} data-canto="${i}">
+                    <summary><span class="canto-titulo">${c.titulo}</span>${c.autor ? `<span class="canto-autor">${c.autor}</span>` : ""}${texto ? "" : '<span class="sin-letra">sin letra</span>'}</summary>
+                    <div class="canto-cuerpo">
+                        ${texto ? htmlLetra(texto) : '<p class="rubrica">Aún no hay letra guardada para este canto. Pégala con «Agregar letra» (desde el folleto o una fuente autorizada).</p>'}
+                        <div class="canto-acciones">
+                            <a class="canto-escuchar" href="${c.url}" target="_blank" rel="noopener">▶ Escuchar</a>
+                            <button class="link-btn" data-editar-letra="${i}">${texto ? "✎ Editar letra" : "＋ Agregar letra"}</button>
+                        </div>
+                        ${local ? '<p class="rubrica">Letra guardada solo en este dispositivo.</p>' : ""}
+                        <div class="editor-letra" hidden>
+                            <textarea rows="10" aria-label="Letra de ${c.titulo}" placeholder="Pega aquí la letra. Deja una línea en blanco entre estrofas.">${escapar(texto)}</textarea>
+                            <div class="canto-acciones">
+                                <button class="prayer-button" data-guardar-letra="${i}">Guardar</button>
+                                <button class="link-btn" data-cancelar-letra="${i}">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </details>`;
+        }
+
         function bloqueCanto(titulo, canto) {
             return `
                 <div class="prayer-section">
                     <h4>${titulo}</h4>
-                    <div class="prayer-text">
-                        <p class="rubrica">Sugerencia (toca para escucharlo):</p>
-                        <p>${enlaceCanto(canto)}</p>
-                    </div>
+                    <p class="rubrica">Sugerencia (puedes cambiarla por otro canto):</p>
+                    ${tarjetaCanto(canto, true)}
                     <button class="link-btn" data-modo="cantos">Ver todos los cantos →</button>
                 </div>`;
         }
@@ -1349,9 +1437,9 @@
             });
             document.getElementById("cantos").innerHTML = `
                 <h2>Cantos marianos</h2>
-                <p class="rubrica">Cantos del folleto del Mes de María 2026. Toca uno para escucharlo; se abre en YouTube.</p>
+                <p class="rubrica">Cantos del folleto del Mes de María 2026. Toca un canto para ver su letra; «Escuchar» abre la grabación en YouTube.</p>
                 <div class="gap"></div>
-                <ul class="cantos-lista">${MM_CANTOS.map(c => `<li>${enlaceCanto(c)}</li>`).join("")}</ul>
+                <div class="cantos-lista">${MM_CANTOS.map(c => tarjetaCanto(c)).join("")}</div>
                 <h2>Oraciones marianas</h2>
                 ${oracionesHtml.filter(h => !h.startsWith("<li>")).join("")}
                 <p class="mm-sub">Otras oraciones del folleto</p>
@@ -1480,6 +1568,18 @@
                 irA(t.dataset.jump);
             } else if (t.dataset.font) {
                 cambiarTamano(+t.dataset.font);
+            } else if (t.dataset.editarLetra !== undefined) {
+                const card = t.closest(".canto");
+                card.querySelector(".editor-letra").hidden = false;
+                card.querySelector("textarea").focus();
+            } else if (t.dataset.cancelarLetra !== undefined) {
+                t.closest(".editor-letra").hidden = true;
+            } else if (t.dataset.guardarLetra !== undefined) {
+                const c = MM_CANTOS[+t.dataset.guardarLetra];
+                guardarLetra(c.titulo, t.closest(".editor-letra").querySelector("textarea").value);
+                // Redibuja la tarjeta en su lugar, abierta, para ver la letra guardada
+                const card = t.closest(".canto");
+                card.outerHTML = tarjetaCanto(c, true);
             } else if (t.id === "tema-btn") {
                 cambiarTema();
             } else if (t.id === "reset-btn") {
