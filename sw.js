@@ -1,8 +1,8 @@
 // Service worker: permite abrir el Rosario sin conexión.
 // La página se pide primero a la red (para recibir siempre la última versión)
 // y, si no hay conexión, se usa la copia guardada.
-const CACHE = "rosario-v1";
-const ARCHIVOS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
+const CACHE = "rosario-v3";
+const ARCHIVOS = ["./", "./index.html", "./mes-maria.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {
     event.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));

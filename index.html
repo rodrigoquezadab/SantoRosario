@@ -9,6 +9,13 @@
     <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <script>
+        // Aplica el tema guardado antes de pintar la página (evita un destello claro)
+        try {
+            const t = localStorage.getItem("rosario-tema");
+            if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+        } catch (e) { }
+    </script>
     <style>
         :root {
             color-scheme: light dark;
@@ -32,8 +39,30 @@
             --focus: #f0a500;
             --shadow: 0 1px 2px rgba(40, 30, 10, .06), 0 4px 14px rgba(40, 30, 10, .06);
         }
+        /* Tema elegido a mano con el botón 🌙/☀️ (data-theme en <html>); si no, sigue al sistema */
+        :root[data-theme="light"] { color-scheme: light; }
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #14161b;
+            --card: #1d2027;
+            --surface: #252932;
+            --border: #353a46;
+            --text: #ebe7df;
+            --muted: #b3ada2;
+            --accent: #8fa8e8;
+            --accent-strong: #b3c5f2;
+            --accent-soft: #283250;
+            --on-accent: #10131a;
+            --gold: #d6b45a;
+            --gold-soft: #2e2a1f;
+            --guia: #ff6b6b;
+            --asamblea: #8c9cff;
+            --done-bg: #1c3626;
+            --done-fg: #8fd8a4;
+            --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .25);
+        }
         @media (prefers-color-scheme: dark) {
-            :root {
+            :root:not([data-theme="light"]) {
                 --bg: #14161b;
                 --card: #1d2027;
                 --surface: #252932;
@@ -125,7 +154,6 @@
             font-size: 14px;
             cursor: pointer;
         }
-        .tool-btn:hover { border-color: var(--accent); }
         .chips {
             display: flex;
             gap: 6px;
@@ -145,7 +173,6 @@
             cursor: pointer;
             white-space: nowrap;
         }
-        .chip:hover { border-color: var(--accent); color: var(--accent); }
         .progress-bar { height: 4px; background: var(--border); }
         .progress-bar > div { height: 100%; width: 0; background: var(--gold); transition: width .4s ease; }
         @media (max-width: 420px) {
@@ -256,7 +283,6 @@
             transition: border-color .2s, background .2s;
             line-height: 1.3;
         }
-        .mystery-type-button:hover { border-color: var(--accent); }
         .mystery-type-button .mt-name { display: block; font-weight: 700; color: var(--accent-strong); }
         .mystery-type-button .mt-days { display: block; font-size: .8em; color: var(--muted); margin-top: 2px; }
         .mystery-type-button.active { border-color: var(--accent); background: var(--accent); }
@@ -313,9 +339,6 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        @media (hover: hover) and (pointer: fine) {
-            .prayer-button:hover:not(:disabled) { background: var(--accent-strong); border-color: var(--accent-strong); }
-        }
         .prayer-button:active:not(:disabled) { transform: scale(.97); }
         .prayer-button.completed {
             background: var(--done-bg);
@@ -326,35 +349,32 @@
 
         /* ---------- Contador de Avemarías ---------- */
         .counter { display: flex; flex-direction: column; gap: 12px; }
-        .beads { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        /* Cuentas: 5 por fila, ocupan todo el ancho y se adaptan a la pantalla */
+        .beads {
+            display: grid;
+            grid-template-columns: repeat(var(--cols, 5), 1fr);
+            gap: 8px;
+            width: 100%;
+        }
         .bead {
-            width: 28px;
-            height: 28px;
+            width: 100%;
+            max-width: 72px;
+            aspect-ratio: 1;
+            justify-self: center;
             border-radius: 50%;
             border: 2px solid var(--accent);
             background: transparent;
             cursor: pointer;
-            font: 600 11px/1 system-ui, sans-serif;
+            font: 600 clamp(13px, 4vw, 18px)/1 system-ui, sans-serif;
             color: var(--muted);
             padding: 0;
             transition: background .15s, transform .15s;
         }
         .bead.on { background: var(--accent); color: var(--on-accent); }
         .bead.done-all { background: var(--done-fg); border-color: var(--done-fg); color: var(--card); }
-        .counter-actions { display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .counter-main { flex: 1; max-width: 300px; padding: 14px 22px; font-size: 1.05em; }
-        .counter-value { font: 700 1em/1 system-ui, sans-serif; color: var(--muted); min-width: 52px; text-align: center; }
-        .counter-undo {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: var(--card);
-            cursor: pointer;
-            font: 700 14px/1 system-ui, sans-serif;
-            color: var(--muted);
-        }
-        .counter-undo:disabled { opacity: .4; cursor: default; }
+        .counter-actions { display: flex; justify-content: center; }
+        .counter-value { font: 700 1em/1 system-ui, sans-serif; color: var(--muted); text-align: center; }
+        .counter-value.lleno { color: var(--done-fg); }
 
         /* ---------- Decenas plegables ---------- */
         .decena { margin: 14px 0; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
@@ -399,9 +419,15 @@
             padding: 8px 12px;
             cursor: pointer;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
             text-align: left;
             font-size: .92em;
         }
+        .passage-toggle .chev { color: var(--accent); font-size: 1.5em; line-height: 1; }
+        .passage-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
         .bible-passage {
             background: var(--surface);
             padding: 12px 14px;
@@ -435,6 +461,105 @@
 
         .final-actions { text-align: center; margin-top: 30px; }
 
+        [hidden] { display: none !important; }
+
+        /* ---------- Pestañas: Rosario / Mes de María / Cantos ---------- */
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+        .tab {
+            border: none;
+            background: transparent;
+            border-radius: 9px;
+            padding: 9px 4px;
+            cursor: pointer;
+            font: 600 14px/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: var(--muted);
+        }
+        .tab[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
+
+        /* ---------- Mes de María ---------- */
+        .mm-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .mm-nav select {
+            flex: 1;
+            min-width: 0;
+            padding: 9px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font: 600 14px/1.2 system-ui, sans-serif;
+        }
+        .mm-flecha {
+            flex: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--accent);
+            font-size: 1.3em;
+            cursor: pointer;
+        }
+        .mm-flecha:disabled { opacity: .35; cursor: default; }
+        .mm-dia {
+            background: var(--gold-soft);
+            border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .mm-semana { font: 700 12px/1.3 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--gold); }
+        .mm-lema { font-style: italic; color: var(--muted); font-size: .9em; margin-top: 2px; }
+        .mm-fecha { font-size: 1.3em; font-weight: 700; color: var(--accent); margin-top: 8px; }
+        .mm-label { font: 700 12px/1.3 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-top: 10px; }
+        .mm-tema { font-weight: 700; font-size: 1.1em; color: var(--accent-strong); }
+        .mm-semana-box { margin-top: 10px; text-align: left; }
+        .mm-semana-box summary { cursor: pointer; color: var(--gold); font-weight: 600; font-size: .92em; text-align: center; }
+        .mm-semana-box .prayer-text { margin-top: 10px; }
+        .mm-cita { text-align: right; font-weight: 600; color: var(--accent); font-size: .9em; margin-top: 6px; }
+        .mm-libro { font-style: italic; color: var(--muted); margin-bottom: 6px; }
+        .mm-fuente { font-size: .75em; color: var(--muted); margin-top: 10px; text-align: right; }
+        .mm-lista { padding-left: 1.2em; }
+        .mm-lista li + li { margin-top: .5em; }
+        .peticion + .peticion { margin-top: .9em; }
+        .canto-link { color: var(--accent); font-weight: 700; text-decoration: none; }
+        .canto-link:hover { text-decoration: underline; }
+        .canto-autor { display: block; color: var(--muted); font-size: .85em; }
+        .link-btn {
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 0 0;
+            font-size: .9em;
+            text-decoration: underline;
+        }
+        .mm-pie { display: flex; justify-content: space-between; gap: 8px; margin-top: 18px; }
+        .mm-pie .prayer-button { flex: 1; }
+        .rubrica { font-style: italic; color: var(--muted); font-size: .9em; }
+        .mm-sub { font-weight: 700; color: var(--accent-strong); margin-top: 14px; }
+        .celebracion .rol-linea + .rol-linea { margin-top: .55em; }
+        .celebracion h4 { margin-top: 18px; }
+        .rol-animador { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+        .rol-lector { color: var(--gold); background: color-mix(in srgb, var(--gold) 16%, transparent); }
+        .cantos-lista { list-style: none; display: grid; gap: 8px; }
+        .cantos-lista li {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+        .cantos-lista .canto-link::before { content: "▶ "; font-size: .8em; }
+
         /* ---------- Móvil: espacios compactos para mostrar más texto ---------- */
         @media (max-width: 600px) {
             .topbar-row { padding: 4px 6px; }
@@ -449,7 +574,6 @@
             .prayer-text { padding: 8px 8px; margin: 6px 0 8px; border-left-width: 3px; }
             .prayer-button { padding: 8px 18px; }
             .counter { gap: 8px; }
-            .counter-main { padding: 11px 18px; }
             .decena { margin: 8px 0; border-radius: 12px; }
             .decena-header { padding: 10px 8px; gap: 8px; }
             .decena-body { padding: 0 4px 4px; }
@@ -480,6 +604,7 @@
             <button class="progress-label" id="progress-label" data-jump="actual" aria-live="polite" title="Ir a donde vas"></button>
             <button class="tool-btn" data-font="-1" aria-label="Reducir tamaño de letra">A−</button>
             <button class="tool-btn" data-font="1" aria-label="Aumentar tamaño de letra">A+</button>
+            <button class="tool-btn" id="tema-btn" aria-label="Cambiar tema" title="Tema">🌓</button>
             <button class="tool-btn" id="reset-btn" aria-label="Reiniciar el rosario" title="Reiniciar el rosario">↺</button>
         </div>
         <nav class="topbar-row chips" aria-label="Secciones">
@@ -487,6 +612,7 @@
             <button class="chip" data-jump="inicio-rosario">Inicio</button>
             <button class="chip" data-jump="decena">Decena actual</button>
             <button class="chip" data-jump="fin-rosario">Final</button>
+            <button class="chip" data-jump="mm-lectura" data-ver="mes">Lectura</button>
             <button class="chip" data-jump="opcionales">Opcionales</button>
             <button class="chip" data-jump="citas">Citas</button>
         </nav>
@@ -496,40 +622,62 @@
     <main class="container">
         <h1><a href="" title="Recargar la página">Cómo rezar el Santo Rosario</a></h1>
 
-        <p class="intro-text">Los misterios del día ya están seleccionados; puedes cambiarlos más abajo. Marca cada oración al terminarla: tu avance se guarda en este dispositivo y la pantalla se mantiene encendida mientras rezas.</p>
+        <nav class="tabs" role="tablist" aria-label="Vistas">
+            <button class="tab" role="tab" data-modo="rosario" aria-selected="true">📿 Rosario</button>
+            <button class="tab" role="tab" data-modo="mes" aria-selected="false">🌸 Mes de María</button>
+            <button class="tab" role="tab" data-modo="cantos" aria-selected="false">🎵 Cantos</button>
+        </nav>
 
-        <div class="legend">
+        <p class="intro-text" data-ver="rosario">Los misterios del día ya están seleccionados; puedes cambiarlos más abajo. Marca cada oración al terminarla: tu avance se guarda en este dispositivo y la pantalla se mantiene encendida mientras rezas.</p>
+
+        <div id="mm-cabecera" data-ver="mes"></div>
+
+        <div class="legend" data-ver="rosario mes">
             <span><span class="red-plus">+</span><span class="rol rol-guia">Guía</span> parte del Guía</span>
             <span><span class="default-plus">+</span><span class="rol rol-asamblea">Asamblea</span> parte de la Asamblea</span>
             <span class="legend-note">En el segundo y cuarto misterio se alternan: comienza la Asamblea y responde el Guía.</span>
         </div>
 
-        <div id="mes-maria-aviso"></div>
+        <div id="mes-maria-aviso" data-ver="rosario"></div>
 
-        <div class="quote-box">
+        <div class="quote-box" data-ver="rosario">
             <p>El Santo Rosario es una devoción recomendada por muchos Papas y Santos. La misma Virgen pidió que se rezase en Lourdes y Fátima.</p>
         </div>
 
-        <h2 id="seleccion">Misterios del día</h2>
-        <div class="mystery-selection-controls" id="mystery-types"></div>
-        <div class="rosario-del-dia" id="rosario-del-dia"></div>
+        <div id="mm-antes" data-ver="mes"></div>
 
-        <h2 id="inicio-rosario">Oraciones iniciales</h2>
-        <div id="inicio-contenido"></div>
+        <div data-ver="rosario">
+            <h2 id="seleccion">Misterios del día</h2>
+            <div class="mystery-selection-controls" id="mystery-types"></div>
+        </div>
 
-        <h2 id="decenas">Las cinco decenas</h2>
-        <div id="decenas-completas"></div>
+        <div data-ver="rosario mes">
+            <div class="rosario-del-dia" id="rosario-del-dia"></div>
 
-        <div id="fin-rosario"></div>
+            <h2 id="inicio-rosario">Oraciones iniciales</h2>
+            <div id="inicio-contenido"></div>
 
-        <h2 id="citas">Citas sobre el Santo Rosario</h2>
-        <div id="quotes-content"></div>
+            <h2 id="decenas">Las cinco decenas</h2>
+            <div id="decenas-completas"></div>
+
+            <div id="fin-rosario"></div>
+        </div>
+
+        <div id="mm-despues" data-ver="mes"></div>
+
+        <div id="cantos" data-ver="cantos"></div>
+
+        <div data-ver="rosario mes">
+            <h2 id="citas">Citas sobre el Santo Rosario</h2>
+            <div id="quotes-content"></div>
+        </div>
 
         <div class="final-actions">
             <button class="prayer-button" data-jump="top">↑ Volver arriba</button>
         </div>
     </main>
 
+    <script src="mes-maria.js"></script>
     <script>
         // --- ALMACENAMIENTO DE ORACIONES Y MISTERIOS ---
 
@@ -623,11 +771,11 @@
         };
 
         const letaniasCompletas = [
-            { linea: "Señor, ten piedad", respuesta: "" },
-            { linea: "Cristo, ten piedad", respuesta: "" },
-            { linea: "Señor, ten piedad.", respuesta: "" },
-            { linea: "Cristo, óyenos.", respuesta: "" },
-            { linea: "Cristo, escúchanos.", respuesta: "" },
+            { linea: "Señor, ten piedad.", respuesta: "Señor, ten piedad." },
+            { linea: "Cristo, ten piedad.", respuesta: "Cristo, ten piedad." },
+            { linea: "Señor, ten piedad.", respuesta: "Señor, ten piedad." },
+            { linea: "Cristo, óyenos.", respuesta: "Cristo, óyenos." },
+            { linea: "Cristo, escúchanos.", respuesta: "Cristo, escúchanos." },
             { linea: "Dios, Padre celestial,", respuesta: "ten piedad de nosotros." },
             { linea: "Dios, Hijo, Redentor del mundo,", respuesta: "ten piedad de nosotros." },
             { linea: "Dios, Espíritu Santo,", respuesta: "ten piedad de nosotros." },
@@ -685,7 +833,7 @@
             { linea: "Reina asunta a los Cielos,", respuesta: "ruega por nosotros." },
             { linea: "Reina del Santísimo Rosario,", respuesta: "ruega por nosotros." },
             { linea: "Reina de la familia,", respuesta: "ruega por nosotros." },
-            { linea: "Reina de la paz.", respuesta: "ruega por nosotros." }
+            { linea: "Reina de la paz,", respuesta: "ruega por nosotros." }
         ];
 
         const citas = [
@@ -703,7 +851,7 @@
         // Un paso simple vale 1; un contador vale 1 por cada Avemaría.
         const PASOS_INICIO = ["ini-senal", "ini-amparo", "ini-invoc"];
         const PASOS_DECENA = n => [`d${n}-pn`, `d${n}-am`, `d${n}-gl`, `d${n}-oj`];
-        const PASOS_FIN = ["fin-salve", "fin-jac", "fin-pn", "fin-am3", "fin-sant"];
+        const PASOS_FIN = ["fin-salve", "fin-jac", "fin-pn", "fin-am3", "fin-gl", "fin-sant"];
         const maxDe = id => id === "fin-am3" ? 3 : (id.endsWith("-am") ? 10 : 0);
 
         // --- ESTADO (se guarda por día en este dispositivo) ---
@@ -773,10 +921,8 @@
             }
             return `
                 <div class="counter" data-counter="${id}" data-max="${max}">
-                    <div class="beads">${cuentas}</div>
+                    <div class="beads" style="--cols: ${Math.min(max, 5)}">${cuentas}</div>
                     <div class="counter-actions">
-                        <button class="counter-undo" data-counter-undo aria-label="Quitar un ${nombre}">−1</button>
-                        <button class="prayer-button counter-main" data-counter-main>+1 ${nombre}</button>
                         <span class="counter-value" aria-live="polite">0 / ${max}</span>
                     </div>
                 </div>`;
@@ -816,7 +962,7 @@
                         <span class="chev" aria-hidden="true">▾</span>
                     </button>
                     <div class="decena-body" id="decena-body-${n}" hidden>
-                        <button class="passage-toggle" data-passage="pasaje-${n}" aria-expanded="false" aria-controls="pasaje-${n}">📖 Leer el pasaje bíblico</button>
+                        <button class="passage-toggle" data-passage="pasaje-${n}" aria-expanded="false" aria-controls="pasaje-${n}"><span class="passage-label">📖 Leer el pasaje bíblico</span><span class="chev" aria-hidden="true">▾</span></button>
                         <div class="bible-passage" id="pasaje-${n}" hidden>
                             <p>${m.pasaje}</p>
                             <p class="pausa">(Breve pausa de reflexión)</p>
@@ -852,10 +998,12 @@
         }
 
         function generarMesMaria() {
-            return `
+            // En la vista «Mes de María» estas oraciones ya están integradas en el día.
+            return `<div data-ver="rosario">
                 <h2 id="mes-maria">Oraciones del Mes de María${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</h2>
                 ${seccion({ id: "opt-mm1", titulo: "Oración inicial del Mes de María", cuerpo: `<p>${oraciones.mesMaria.inicial}</p>` })}
-                ${seccion({ id: "opt-mm2", titulo: "Oración final del Mes de María", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })}`;
+                ${seccion({ id: "opt-mm2", titulo: "Oración final del Mes de María", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })}
+                </div>`;
         }
 
         // Mes de María (Chile): 8 de noviembre al 8 de diciembre
@@ -869,10 +1017,11 @@
             html += `<h2>Por las intenciones del Santo Padre</h2>`;
             html += seccion({ id: "fin-pn", titulo: "Padrenuestro", cuerpo: textoAlternado(oraciones.padrenuestro) });
             html += seccion({ id: "fin-am3", titulo: "3 Avemarías", cuerpo: textoAlternado(oraciones.avemaria), control: contador("fin-am3", 3) });
+            html += seccion({ id: "fin-gl", titulo: "Gloria", cuerpo: textoAlternado(oraciones.gloria) });
             html += seccion({ id: "fin-sant", titulo: "Santiguación final", cuerpo: `<p>${oraciones.santiguacion}</p>` });
 
             const itemLetanias = `<li><a href="#letanias-y-oracion-final">→ Letanías, Cordero de Dios y Oración final</a></li>`;
-            const itemMesMaria = `<li><a href="#mes-maria">→ Oraciones del Mes de María</a>${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</li>`;
+            const itemMesMaria = `<li data-ver="rosario"><a href="#mes-maria">→ Oraciones del Mes de María</a>${mesDeMariaActivo ? ' <span class="en-curso">En curso</span>' : ""}</li>`;
 
             html += `
                 <div class="optional-section" id="opcionales">
@@ -937,12 +1086,9 @@
                     b.classList.toggle("done-all", lleno);
                     b.setAttribute("aria-pressed", i <= c);
                 });
-                el.querySelector(".counter-value").textContent = `${c} / ${max}`;
-                const main = el.querySelector("[data-counter-main]");
-                main.disabled = lleno;
-                main.classList.toggle("completed", lleno);
-                main.textContent = lleno ? `✓ ${max} Avemarías` : "+1 Avemaría";
-                el.querySelector("[data-counter-undo]").disabled = c === 0;
+                const valor = el.querySelector(".counter-value");
+                valor.textContent = lleno ? `✓ ${max} Avemarías` : `${c} / ${max}`;
+                valor.classList.toggle("lleno", lleno);
             });
 
             // Secciones completadas
@@ -1011,6 +1157,8 @@
         function irA(destino) {
             let el;
             if (destino === "top") { window.scrollTo({ top: 0 }); return; }
+            if (modo === "cantos") setModo("rosario", false);
+            if (destino === "seleccion" && modo === "mes") destino = "mm-cabecera";
             if (destino === "decena" || destino === "actual") {
                 const n = decenaActual();
                 if (destino === "actual" && n === 0 && !PASOS_INICIO.every(estaHecho)) {
@@ -1046,6 +1194,191 @@
             refrescar();
         }
 
+        // =====================================================================
+        // MES DE MARÍA: vista completa de cada día (datos en mes-maria.js)
+        // =====================================================================
+        const MODO_KEY = "rosario-modo";
+        const ROL = {
+            G: ["rol-guia", "Guía"], A: ["rol-animador", "Animador"], L: ["rol-lector", "Lector"], T: ["rol-asamblea", "Todos"]
+        };
+        let modo = "rosario";
+        let mmIndice = Math.max(0, MM_DIAS.findIndex(d => d.fecha === fechaHoy));
+
+        const marca = r => `<span class="rol ${ROL[r][0]}">${ROL[r][1]}</span>`;
+        const lineaRol = (r, texto) => `<p class="rol-linea">${marca(r)}${texto}</p>`;
+        const vr = (v, r) => `<p class="parte">${MARCA.G}${v}</p><p class="parte">${MARCA.A}${r}</p>`;
+        const parrafos = texto => texto.split("\n").map(p => `<p>${p}</p>`).join("");
+
+        function fechaDia(fecha, conAnio = false) {
+            const d = new Date(fecha + "T12:00:00");
+            return capitalizar(d.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long", ...(conAnio ? { year: "numeric" } : {}) }));
+        }
+
+        function enlaceCanto(c) {
+            return `<a class="canto-link" href="${c.url}" target="_blank" rel="noopener">${c.titulo}</a>${c.autor ? `<span class="canto-autor">${c.autor}</span>` : ""}`;
+        }
+
+        function bloqueCanto(titulo, canto) {
+            return `
+                <div class="prayer-section">
+                    <h4>${titulo}</h4>
+                    <div class="prayer-text">
+                        <p class="rubrica">Sugerencia (toca para escucharlo):</p>
+                        <p>${enlaceCanto(canto)}</p>
+                    </div>
+                    <button class="link-btn" data-modo="cantos">Ver todos los cantos →</button>
+                </div>`;
+        }
+
+        const bloqueMM = (titulo, cuerpo, id = "") =>
+            `<div class="prayer-section"${id ? ` id="${id}"` : ""}><h4>${titulo}</h4><div class="prayer-text">${cuerpo}</div></div>`;
+
+        function textoBiblico(cita, libro, tipoAclamacion) {
+            const [v, r] = MM_ACLAMACION[tipoAclamacion] || [];
+            return `${libro ? `<p class="mm-libro">${libro}</p>` : ""}
+                <p>${MM_BIBLIA[cita]}</p>
+                <p class="mm-cita">(${cita})</p>
+                ${v ? `<div class="gap"></div>${vr(v, r)}` : ""}
+                <p class="mm-fuente">Adaptación de la traducción de Félix Torres Amat (1825).</p>`;
+        }
+
+        function renderCelebracion() {
+            let html = "";
+            MM_CELEBRACION.forEach(it => {
+                if (it.tipo === "titulo") {
+                    html += `<h4>${it.texto}</h4>`;
+                    if (it.canto) html += `<button class="link-btn" data-modo="cantos">Elegir un canto →</button>`;
+                } else if (it.tipo === "subtitulo") {
+                    html += `<p class="mm-sub">${it.texto}</p>`;
+                } else if (it.tipo === "nota") {
+                    html += `<p class="rubrica">${it.texto}</p>`;
+                } else if (it.tipo === "lectura") {
+                    const [v, r] = it.sinAclamacion ? [] : MM_ACLAMACION[it.aclamacion];
+                    html += `<div class="prayer-text">
+                        <p>${marca(it.rol)}<strong>${it.titulo}</strong> <span class="mm-cita">(${it.cita})</span></p>
+                        <p>${MM_BIBLIA[it.cita]}</p>
+                        ${v ? `${lineaRol(it.rol, v)}${lineaRol("T", r)}` : ""}
+                    </div>`;
+                } else if (it.tipo === "salmo") {
+                    html += `<div class="prayer-text">
+                        <p>${marca(it.rol)}<strong>${it.titulo}</strong> <span class="mm-cita">(${it.cita})</span></p>
+                        ${lineaRol("T", `<em>${it.respuesta}</em>`)}
+                        ${it.estrofas.map(e => lineaRol(it.rol, e) + lineaRol("T", `<em>${it.respuesta}</em>`)).join("")}
+                    </div>`;
+                } else {
+                    html += lineaRol(it.rol, it.texto);
+                }
+            });
+            return `
+                <h2 id="mm-celebracion">Solemnidad de la Inmaculada Concepción</h2>
+                <p class="rubrica">Celebración para comunidades que no cuentan con celebración eucarística.
+                Lecturas: adaptación de la traducción de Félix Torres Amat (1825).
+                Roles: ${marca("A")} Animador · ${marca("G")} Guía · ${marca("L")} Lector · ${marca("T")} Todos.</p>
+                <div class="prayer-section celebracion">${html}</div>`;
+        }
+
+        function renderMesMaria() {
+            const d = MM_DIAS[mmIndice];
+            const s = MM_SEMANAS[d.semana];
+            const nC = MM_CANTOS.length;
+            const opciones = MM_SEMANAS.map((sem, si) =>
+                `<optgroup label="${sem.titulo}">${MM_DIAS.map((dia, i) => dia.semana !== si ? "" :
+                    `<option value="${i}"${i === mmIndice ? " selected" : ""}>${fechaDia(dia.fecha)}${dia.fecha === fechaHoy ? " (hoy)" : ""}</option>`).join("")}</optgroup>`).join("");
+
+            document.getElementById("mm-cabecera").innerHTML = `
+                <div class="mm-nav">
+                    <button class="mm-flecha" data-mm-paso="-1" aria-label="Día anterior"${mmIndice === 0 ? " disabled" : ""}>‹</button>
+                    <select id="mm-select" aria-label="Elegir día del Mes de María">${opciones}</select>
+                    <button class="mm-flecha" data-mm-paso="1" aria-label="Día siguiente"${mmIndice === MM_DIAS.length - 1 ? " disabled" : ""}>›</button>
+                </div>
+                <div class="mm-dia">
+                    <div class="mm-semana">${s.titulo} · Día ${mmIndice + 1} de ${MM_DIAS.length}</div>
+                    <div class="mm-lema">${s.lema}</div>
+                    <div class="mm-fecha">${fechaDia(d.fecha, true)}${d.fecha === fechaHoy ? ' <span class="en-curso">Hoy</span>' : ""}</div>
+                    <div class="mm-label">Tema para hoy</div>
+                    <div class="mm-tema">${d.tema}</div>
+                    <details class="mm-semana-box">
+                        <summary>Motivación y texto bíblico de la semana</summary>
+                        <div class="prayer-text">
+                            <p>${s.motivacion}</p>
+                            <div class="gap"></div>
+                            <p><strong>${s.texto.titulo}</strong></p>
+                            <p>${MM_BIBLIA[s.texto.cita]}</p>
+                            <p class="mm-cita">(${s.texto.cita})</p>
+                        </div>
+                    </details>
+                </div>`;
+
+            document.getElementById("mm-antes").innerHTML = `
+                <h2>Inicio</h2>
+                ${bloqueCanto("Canto inicial", MM_CANTOS[(mmIndice * 2) % nC])}
+                ${bloqueMM("Saludo", vr("En el nombre del Padre, y del Hijo, y del Espíritu Santo.", "Amén."))}
+                ${bloqueMM("Motivación", parrafos(d.motivacion))}
+                ${bloqueMM("Oración inicial", `<p>${oraciones.mesMaria.inicial}</p>`)}
+                <h2>Santo Rosario</h2>`;
+
+            const peticiones = [...d.peticiones, "Oremos al Señor por nuestras necesidades y las de nuestra comunidad…"]
+                .map(p => `<div class="peticion"><p>${p}</p>${vr("Con María, roguemos al Señor.", "Escúchanos, Señor, te rogamos.")}</div>`).join("");
+
+            document.getElementById("mm-despues").innerHTML = `
+                <h2 id="mm-lectura">Palabra de Dios</h2>
+                ${bloqueMM("Texto bíblico", textoBiblico(d.cita, d.libro, d.lectura))}
+                ${bloqueMM("Reflexión", parrafos(d.reflexion))}
+                ${bloqueMM(d.preguntas.length > 1 ? "Preguntas para meditar" : "Pregunta para meditar",
+                    `<ul class="mm-lista">${d.preguntas.map(p => `<li>${p}</li>`).join("")}</ul>`)}
+                ${bloqueMM("Peticiones", peticiones)}
+                <h2>Conclusión</h2>
+                ${bloqueMM("Oración final", `<p>${oraciones.mesMaria.final}</p>`)}
+                ${bloqueCanto("Canto final", MM_CANTOS[(mmIndice * 2 + 1) % nC])}
+                ${d.celebracion ? renderCelebracion() : ""}
+                <div class="mm-pie">
+                    <button class="prayer-button" data-mm-paso="-1"${mmIndice === 0 ? " disabled" : ""}>‹ Día anterior</button>
+                    <button class="prayer-button" data-mm-paso="1"${mmIndice === MM_DIAS.length - 1 ? " disabled" : ""}>Día siguiente ›</button>
+                </div>`;
+
+            // El Rosario del día usa los misterios indicados para esta fecha
+            if (state.tipo !== d.misterios) cambiarTipo(d.misterios, false);
+        }
+
+        function renderCantos() {
+            const oracionesHtml = MM_ORACIONES.map(o => {
+                const texto = o.texto === "inicial" ? oraciones.mesMaria.inicial
+                    : o.texto === "final" ? oraciones.mesMaria.final : o.texto;
+                if (texto) return bloqueMM(o.titulo, `${o.autor ? `<p class="rubrica">${o.autor}</p>` : ""}<p>${texto}</p>`);
+                return `<li><strong>${o.titulo}</strong><span class="canto-autor">${o.autor}${o.url ? ` · <a class="canto-link" href="${o.url}" target="_blank" rel="noopener">Leer en vatican.va</a>` : ""}</span></li>`;
+            });
+            document.getElementById("cantos").innerHTML = `
+                <h2>Cantos marianos</h2>
+                <p class="rubrica">Cantos del folleto del Mes de María 2026. Toca uno para escucharlo; se abre en YouTube.</p>
+                <div class="gap"></div>
+                <ul class="cantos-lista">${MM_CANTOS.map(c => `<li>${enlaceCanto(c)}</li>`).join("")}</ul>
+                <h2>Oraciones marianas</h2>
+                ${oracionesHtml.filter(h => !h.startsWith("<li>")).join("")}
+                <p class="mm-sub">Otras oraciones del folleto</p>
+                <div class="gap"></div>
+                <ul class="cantos-lista">${oracionesHtml.filter(h => h.startsWith("<li>")).join("")}</ul>`;
+        }
+
+        function setModo(nuevo, desplazar = true) {
+            modo = nuevo;
+            try { localStorage.setItem(MODO_KEY, modo); } catch (e) { }
+            document.querySelectorAll("[data-ver]").forEach(el => { el.hidden = !el.dataset.ver.split(" ").includes(modo); });
+            document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.modo === modo));
+            if (modo === "mes") renderMesMaria();
+            if (modo === "cantos") renderCantos();
+            if (desplazar) document.querySelector(".tabs").scrollIntoView({ block: "start" });
+        }
+
+        function irADiaMM(i) {
+            mmIndice = Math.max(0, Math.min(MM_DIAS.length - 1, i));
+            renderMesMaria();
+            document.getElementById("mm-cabecera").scrollIntoView({ block: "start" });
+        }
+
+        document.addEventListener("change", e => {
+            if (e.target.id === "mm-select") irADiaMM(+e.target.value);
+        });
+
         function decenaDe(id) {
             const m = /^d(\d)-/.exec(id);
             return m ? decenaCompleta(+m[1]) : false;
@@ -1069,6 +1402,34 @@
         });
 
         // --- Tamaño de letra ---
+        // --- Tema: automático (según el sistema) → oscuro → claro ---
+        const TEMA_KEY = "rosario-tema";
+        const TEMAS = {
+            auto: { icono: "🌓", nombre: "automático (según el dispositivo)" },
+            dark: { icono: "🌙", nombre: "oscuro" },
+            light: { icono: "☀️", nombre: "claro" }
+        };
+        function aplicarTema(tema) {
+            if (tema === "auto") delete document.documentElement.dataset.theme;
+            else document.documentElement.dataset.theme = tema;
+            const btn = document.getElementById("tema-btn");
+            btn.textContent = TEMAS[tema].icono;
+            btn.title = `Tema ${TEMAS[tema].nombre}. Toca para cambiar.`;
+            btn.setAttribute("aria-label", `Tema ${TEMAS[tema].nombre}. Cambiar tema`);
+            // Color de la barra del navegador en el móvil
+            const color = tema === "dark" ? "#16181d" : tema === "light" ? "#34508c" : null;
+            document.querySelectorAll('meta[name="theme-color"]').forEach((m, i) => {
+                m.content = color || (i === 0 ? "#34508c" : "#16181d");
+            });
+        }
+        function cambiarTema() {
+            const orden = ["auto", "dark", "light"];
+            const actual = document.documentElement.dataset.theme || "auto";
+            const sig = orden[(orden.indexOf(actual) + 1) % orden.length];
+            try { localStorage.setItem(TEMA_KEY, sig); } catch (e) { }
+            aplicarTema(sig);
+        }
+
         function aplicarTamano(px) {
             document.documentElement.style.setProperty("--fs", px + "px");
             try { localStorage.setItem(FONT_KEY, px); } catch (e) { }
@@ -1091,21 +1452,12 @@
                 if (state.done[id]) delete state.done[id]; else state.done[id] = true;
                 mantenerPantalla();
                 despuesDeCambio(id, antes);
-            } else if (t.hasAttribute("data-counter-main") || t.hasAttribute("data-counter-undo") || t.dataset.bead) {
-                const box = t.closest("[data-counter]");
-                const id = box.dataset.counter;
-                const max = +box.dataset.max;
+            } else if (t.dataset.bead) {
+                const id = t.closest("[data-counter]").dataset.counter;
                 const antes = decenaDe(id);
-                let c = state.counts[id] || 0;
-                if (t.dataset.bead) {
-                    const i = +t.dataset.bead;
-                    c = (i === c) ? i - 1 : i; // tocar la última cuenta marcada la desmarca
-                } else if (t.hasAttribute("data-counter-main")) {
-                    c = Math.min(max, c + 1);
-                } else {
-                    c = Math.max(0, c - 1);
-                }
-                state.counts[id] = c;
+                const c = state.counts[id] || 0;
+                const i = +t.dataset.bead;
+                state.counts[id] = (i === c) ? i - 1 : i; // tocar la última cuenta marcada la desmarca
                 vibrar();
                 mantenerPantalla();
                 despuesDeCambio(id, antes);
@@ -1117,13 +1469,19 @@
                 const p = document.getElementById(t.dataset.passage);
                 p.hidden = !p.hidden;
                 t.setAttribute("aria-expanded", !p.hidden);
-                t.textContent = p.hidden ? "📖 Leer el pasaje bíblico" : "📖 Ocultar el pasaje bíblico";
+                t.querySelector(".passage-label").textContent = p.hidden ? "📖 Leer el pasaje bíblico" : "📖 Ocultar el pasaje bíblico";
             } else if (t.dataset.tipo) {
                 cambiarTipo(t.dataset.tipo);
+            } else if (t.dataset.modo) {
+                setModo(t.dataset.modo);
+            } else if (t.dataset.mmPaso) {
+                irADiaMM(mmIndice + +t.dataset.mmPaso);
             } else if (t.dataset.jump) {
                 irA(t.dataset.jump);
             } else if (t.dataset.font) {
                 cambiarTamano(+t.dataset.font);
+            } else if (t.id === "tema-btn") {
+                cambiarTema();
             } else if (t.id === "reset-btn") {
                 if (confirm("¿Reiniciar el rosario? Se borrará el avance de hoy.")) {
                     state = estadoNuevo(state.tipo);
@@ -1141,10 +1499,11 @@
                 const px = parseInt(localStorage.getItem(FONT_KEY));
                 if (TAMANOS.includes(px)) aplicarTamano(px);
             } catch (e) { }
+            aplicarTema(document.documentElement.dataset.theme || "auto");
 
             if (mesDeMariaActivo) {
                 document.getElementById("mes-maria-aviso").innerHTML =
-                    `<div class="notice">🌸 Estamos en el <strong>Mes de María</strong> (8 de noviembre al 8 de diciembre). <a href="#mes-maria">Ir a sus oraciones →</a></div>`;
+                    `<div class="notice">🌸 Estamos en el <strong>Mes de María</strong> (8 de noviembre al 8 de diciembre). <button class="link-btn" data-modo="mes">Rezar el día de hoy →</button></div>`;
             }
 
             document.getElementById("mystery-types").innerHTML = generarSelector();
@@ -1153,6 +1512,11 @@
             document.getElementById("fin-rosario").innerHTML = generarFinales();
             document.getElementById("quotes-content").innerHTML = generarCitas();
             refrescar();
+
+            // Vista inicial: la última usada; durante el Mes de María, por defecto el día de hoy
+            let inicial = mesDeMariaActivo ? "mes" : "rosario";
+            try { inicial = localStorage.getItem(MODO_KEY) || inicial; } catch (e) { }
+            setModo(["rosario", "mes", "cantos"].includes(inicial) ? inicial : "rosario", false);
         });
 
         // --- Aplicación instalable / sin conexión ---
