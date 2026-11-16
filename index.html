@@ -592,18 +592,6 @@
         .letra p + p { margin-top: .9em; }
         .canto-acciones { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
         .canto-escuchar { color: var(--muted); font-size: .9em; }
-        .editor-letra textarea {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-            font: inherit;
-            line-height: 1.5;
-            resize: vertical;
-        }
 
         /* ---------- Móvil: espacios compactos para mostrar más texto ---------- */
         @media (max-width: 600px) {
@@ -1270,59 +1258,42 @@
         }
 
         function enlaceCanto(c) {
-            return `<a class="canto-link" href="${c.url}" target="_blank" rel="noopener">${c.titulo}</a>${c.autor ? `<span class="canto-autor">${c.autor}</span>` : ""}`;
+            return `<a class="canto-link" href="${c.url}" target="_blank" rel="noopener noreferrer">${c.titulo}</a>${c.autor ? `<span class="canto-autor">${c.autor}</span>` : ""}`;
         }
 
-        // --- Letras de los cantos: primero las guardadas en este dispositivo, luego cantos-letras.js ---
-        const LETRAS_KEY = "rosario-letras";
+        // --- Letras de los cantos (solo lectura, desde cantos-letras.js) ---
         const escapar = s => s.replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
-        function letrasLocales() {
-            try { return JSON.parse(localStorage.getItem(LETRAS_KEY)) || {}; } catch (e) { return {}; }
-        }
-        function letraDe(titulo) {
-            const local = letrasLocales()[titulo];
-            if (local) return { texto: local, local: true };
-            const comun = (typeof MM_LETRAS !== "undefined" && MM_LETRAS[titulo]) || "";
-            return { texto: comun, local: false };
-        }
-        function guardarLetra(titulo, texto) {
-            const todas = letrasLocales();
-            if (texto.trim()) todas[titulo] = texto.trim(); else delete todas[titulo];
-            try { localStorage.setItem(LETRAS_KEY, JSON.stringify(todas)); } catch (e) { alert("No se pudo guardar en este dispositivo."); }
-        }
+        const letraDe = titulo => (typeof MM_LETRAS !== "undefined" && MM_LETRAS[titulo]) || "";
         const htmlLetra = texto => `<div class="letra">${escapar(texto).split(/\n\s*\n/).map(e => `<p>${e.replace(/\n/g, "<br>")}</p>`).join("")}</div>`;
 
         // Tarjeta de un canto: título, letra (lo principal) y, al final, el enlace para escucharlo
         function tarjetaCanto(c, abierta = false) {
             const i = MM_CANTOS.indexOf(c);
-            const { texto, local } = letraDe(c.titulo);
+            const texto = letraDe(c.titulo);
             return `
                 <details class="canto"${abierta ? " open" : ""} data-canto="${i}">
                     <summary><span class="canto-titulo">${c.titulo}</span>${c.autor ? `<span class="canto-autor">${c.autor}</span>` : ""}${texto ? "" : '<span class="sin-letra">sin letra</span>'}</summary>
                     <div class="canto-cuerpo">
-                        ${texto ? htmlLetra(texto) : '<p class="rubrica">Aún no hay letra guardada para este canto. Pégala con «Agregar letra» (desde el folleto o una fuente autorizada).</p>'}
+                        ${texto ? htmlLetra(texto) : '<p class="rubrica">Aún no hay letra para este canto.</p>'}
                         <div class="canto-acciones">
-                            <a class="canto-escuchar" href="${c.url}" target="_blank" rel="noopener">▶ Escuchar</a>
-                            <button class="link-btn" data-editar-letra="${i}">${texto ? "✎ Editar letra" : "＋ Agregar letra"}</button>
-                        </div>
-                        ${local ? '<p class="rubrica">Letra guardada solo en este dispositivo.</p>' : ""}
-                        <div class="editor-letra" hidden>
-                            <textarea rows="10" aria-label="Letra de ${c.titulo}" placeholder="Pega aquí la letra. Deja una línea en blanco entre estrofas.">${escapar(texto)}</textarea>
-                            <div class="canto-acciones">
-                                <button class="prayer-button" data-guardar-letra="${i}">Guardar</button>
-                                <button class="link-btn" data-cancelar-letra="${i}">Cancelar</button>
-                            </div>
+                            <a class="canto-escuchar" href="${c.url}" target="_blank" rel="noopener noreferrer">▶ Escuchar</a>
                         </div>
                     </div>
                 </details>`;
         }
 
-        function bloqueCanto(titulo, canto) {
+        // Cantos más conocidos: los mismos para el canto inicial y el final
+        const CANTOS_CONOCIDOS = [
+            "Santa María del Camino", "Virgen del Carmen bella", "Maravillas hizo en mí", "Alégrate, María",
+            "Ven y reina, Madre de Dios", "María, mírame", "Mi alma glorifica (Magníficat)"
+        ].map(t => MM_CANTOS.find(c => c.titulo === t)).filter(Boolean);
+
+        function bloqueCanto(titulo) {
             return `
                 <div class="prayer-section">
                     <h4>${titulo}</h4>
-                    <p class="rubrica">Sugerencia (puedes cambiarla por otro canto):</p>
-                    ${tarjetaCanto(canto, true)}
+                    <p class="rubrica">Elige uno de estos cantos. Tócalo para ver la letra; «Escuchar» lo abre en otra pestaña o en YouTube.</p>
+                    <div class="cantos-lista">${CANTOS_CONOCIDOS.map(c => tarjetaCanto(c)).join("")}</div>
                     <button class="link-btn" data-modo="cantos">Ver todos los cantos →</button>
                 </div>`;
         }
@@ -1377,7 +1348,6 @@
         function renderMesMaria() {
             const d = MM_DIAS[mmIndice];
             const s = MM_SEMANAS[d.semana];
-            const nC = MM_CANTOS.length;
             const opciones = MM_SEMANAS.map((sem, si) =>
                 `<optgroup label="${sem.titulo}">${MM_DIAS.map((dia, i) => dia.semana !== si ? "" :
                     `<option value="${i}"${i === mmIndice ? " selected" : ""}>${fechaDia(dia.fecha)}${dia.fecha === fechaHoy ? " (hoy)" : ""}</option>`).join("")}</optgroup>`).join("");
@@ -1408,7 +1378,7 @@
 
             document.getElementById("mm-antes").innerHTML = `
                 <h2>Inicio</h2>
-                ${bloqueCanto("Canto inicial", MM_CANTOS[(mmIndice * 2) % nC])}
+                ${bloqueCanto("Canto inicial")}
                 ${bloqueMM("Saludo", vr("En el nombre del Padre, y del Hijo, y del Espíritu Santo.", "Amén."))}
                 ${bloqueMM("Motivación", parrafos(d.motivacion))}
                 ${mesDeMariaActivo
@@ -1430,7 +1400,7 @@
                 ${mesDeMariaActivo
                     ? seccion({ id: "fin-mm", titulo: "Oración final", cuerpo: `<p>${oraciones.mesMaria.final}</p>` })
                     : bloqueMM("Oración final", `<p>${oraciones.mesMaria.final}</p>`)}
-                ${bloqueCanto("Canto final", MM_CANTOS[(mmIndice * 2 + 1) % nC])}
+                ${bloqueCanto("Canto final")}
                 ${d.celebracion ? renderCelebracion() : ""}
                 <div class="mm-pie">
                     <button class="prayer-button" data-mm-paso="-1"${mmIndice === 0 ? " disabled" : ""}>‹ Día anterior</button>
@@ -1581,18 +1551,6 @@
                 irA(t.dataset.jump);
             } else if (t.dataset.font) {
                 cambiarTamano(+t.dataset.font);
-            } else if (t.dataset.editarLetra !== undefined) {
-                const card = t.closest(".canto");
-                card.querySelector(".editor-letra").hidden = false;
-                card.querySelector("textarea").focus();
-            } else if (t.dataset.cancelarLetra !== undefined) {
-                t.closest(".editor-letra").hidden = true;
-            } else if (t.dataset.guardarLetra !== undefined) {
-                const c = MM_CANTOS[+t.dataset.guardarLetra];
-                guardarLetra(c.titulo, t.closest(".editor-letra").querySelector("textarea").value);
-                // Redibuja la tarjeta en su lugar, abierta, para ver la letra guardada
-                const card = t.closest(".canto");
-                card.outerHTML = tarjetaCanto(c, true);
             } else if (t.id === "tema-btn") {
                 cambiarTema();
             } else if (t.id === "reset-btn") {
