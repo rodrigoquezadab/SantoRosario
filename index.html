@@ -302,6 +302,18 @@
         }
         .rosario-del-dia { text-align: center; margin: 18px 0 6px; color: var(--muted); font-style: italic; }
         .rosario-del-dia .fecha-hoy { display: block; font-style: normal; font-weight: 600; color: var(--gold); margin: 2px 0; }
+        .rosario-del-dia .motivo-hoy { display: block; font-style: normal; font-weight: 600; color: var(--accent); }
+        .celebracion-hoy {
+            margin: 12px auto 0; max-width: 520px; padding: 12px 14px;
+            border: 1px solid var(--border); border-left: 4px solid var(--gold); border-radius: 10px;
+            background: var(--surface); font-style: normal; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+        }
+        .celebracion-hoy .celebracion-fecha { font-size: .85em; color: var(--muted); }
+        .celebracion-hoy .celebracion-nombre { font-weight: 700; color: var(--text); }
+        .celebracion-hoy .celebracion-misterio { color: var(--muted); }
+        .celebracion-hoy .celebracion-misterio strong { display: inline; font-size: 1em; color: var(--accent); letter-spacing: 0; }
+        .celebracion-hoy .prayer-button { margin-top: 6px; }
         .rosario-del-dia strong { display: block; color: var(--accent); font-style: normal; font-size: 1.1em; letter-spacing: .03em; }
 
         /* ---------- Secciones de oración ---------- */
@@ -895,6 +907,98 @@
         const FONT_KEY = "rosario-tamano-letra";
         const TAMANOS = [15, 16, 17, 18, 20, 22, 24];
 
+        // --- MISTERIOS DEL DÍA Y SUGERENCIA SEGÚN EL CALENDARIO LITÚRGICO ---
+        // Por defecto se rezan los misterios del día de la semana (en el Mes de María, los que indica
+        // el folleto de la Conferencia Episcopal de Chile). Las fiestas y tiempos litúrgicos no obligan:
+        // se muestran como sugerencia, con la opción de rezar esos misterios.
+        //   · Solemnidades y fiestas (Iglesia universal y calendario de Chile).
+        //   · Tiempos litúrgicos (domingos de Adviento, Navidad y Cuaresma; Semana Santa; octava de Pascua).
+        const sumarDias = (f, n) => new Date(f.getFullYear(), f.getMonth(), f.getDate() + n);
+        const claveFecha = f => `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, "0")}-${String(f.getDate()).padStart(2, "0")}`;
+
+        function domingoDePascua(a) { // algoritmo gregoriano anónimo (Meeus/Jones/Butcher)
+            const b = Math.floor(a / 100), c = a % 100, d = Math.floor(b / 4), e = b % 4;
+            const g = Math.floor((8 * b + 13) / 25), h = (19 * (a % 19) + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor(((a % 19) + 11 * h + 22 * l) / 451);
+            const mes = Math.floor((h + l - 7 * m + 114) / 31), dia = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(a, mes - 1, dia);
+        }
+
+        const calendarios = {};
+        function calendarioLiturgico(a) {
+            if (calendarios[a]) return calendarios[a];
+            const P = domingoDePascua(a);
+            const navidad = new Date(a, 11, 25);
+            const adviento1 = sumarDias(navidad, -(navidad.getDay() || 7) - 21);
+            // En Chile la Epifanía se celebra el domingo entre el 2 y el 8 de enero
+            const epifania = sumarDias(new Date(a, 0, 2), (7 - new Date(a, 0, 2).getDay()) % 7);
+            const bautismo = epifania.getDate() >= 7 ? sumarDias(epifania, 1) : sumarDias(epifania, 7);
+            const domNavidad = sumarDias(new Date(a, 11, 26), (7 - new Date(a, 11, 26).getDay()) % 7);
+            const sagradaFamilia = domNavidad.getDate() <= 31 && domNavidad.getMonth() === 11 ? domNavidad : new Date(a, 11, 30);
+
+            const fiestas = {};
+            const f = (fecha, tipo, motivo) => { fiestas[claveFecha(fecha)] = { tipo, motivo }; };
+            // Fiestas fijas (Iglesia universal)
+            f(new Date(a, 0, 1), "gozosos", "Solemnidad de Santa María, Madre de Dios");
+            f(new Date(a, 1, 2), "gozosos", "Fiesta de la Presentación del Señor");
+            f(new Date(a, 2, 25), "gozosos", "Solemnidad de la Anunciación del Señor");
+            f(new Date(a, 4, 31), "gozosos", "Fiesta de la Visitación de la Virgen María");
+            f(new Date(a, 7, 6), "luminosos", "Fiesta de la Transfiguración del Señor");
+            f(new Date(a, 7, 15), "gloriosos", "Solemnidad de la Asunción de la Virgen María");
+            f(new Date(a, 7, 22), "gloriosos", "Memoria de Santa María Reina");
+            f(new Date(a, 8, 8), "gozosos", "Fiesta de la Natividad de la Virgen María");
+            f(new Date(a, 8, 14), "dolorosos", "Fiesta de la Exaltación de la Santa Cruz");
+            f(new Date(a, 8, 15), "dolorosos", "Memoria de Nuestra Señora de los Dolores");
+            f(new Date(a, 10, 1), "gloriosos", "Solemnidad de Todos los Santos");
+            f(new Date(a, 11, 8), "gloriosos", "Solemnidad de la Inmaculada Concepción de María");
+            f(navidad, "gozosos", "Solemnidad de la Natividad del Señor");
+            // Calendario de Chile
+            f(new Date(a, 6, 16), "gloriosos", "Solemnidad de la Virgen del Carmen, Reina y Patrona de Chile");
+            // Fiestas móviles (en Chile la Ascensión y el Corpus Christi pasan al domingo)
+            f(sagradaFamilia, "gozosos", "Fiesta de la Sagrada Familia");
+            f(epifania, "gozosos", "Solemnidad de la Epifanía del Señor");
+            f(bautismo, "luminosos", "Fiesta del Bautismo del Señor");
+            f(sumarDias(P, -46), "dolorosos", "Miércoles de Ceniza");
+            f(sumarDias(P, -7), "dolorosos", "Domingo de Ramos en la Pasión del Señor");
+            f(sumarDias(P, -3), "luminosos", "Jueves Santo: institución de la Eucaristía");
+            f(sumarDias(P, -2), "dolorosos", "Viernes Santo de la Pasión del Señor");
+            f(sumarDias(P, -1), "dolorosos", "Sábado Santo");
+            f(P, "gloriosos", "Domingo de Pascua de Resurrección");
+            for (let n = 1; n <= 7; n++) f(sumarDias(P, n), "gloriosos", "Octava de Pascua");
+            f(sumarDias(P, 42), "gloriosos", "Solemnidad de la Ascensión del Señor");
+            f(sumarDias(P, 49), "gloriosos", "Solemnidad de Pentecostés");
+            f(sumarDias(P, 56), "gloriosos", "Solemnidad de la Santísima Trinidad");
+            f(sumarDias(P, 63), "luminosos", "Solemnidad del Santísimo Cuerpo y Sangre de Cristo");
+            f(sumarDias(P, 68), "dolorosos", "Solemnidad del Sagrado Corazón de Jesús");
+            f(sumarDias(P, 69), "gozosos", "Memoria del Inmaculado Corazón de María");
+            f(sumarDias(adviento1, -7), "gloriosos", "Solemnidad de Jesucristo, Rey del Universo");
+
+            return (calendarios[a] = { P, adviento1, bautismo, fiestas });
+        }
+
+        // Celebración litúrgica del día con sus misterios sugeridos, o null si no hay ninguna
+        function celebracionDelDia(fecha) {
+            const a = fecha.getFullYear();
+            const cal = calendarioLiturgico(a);
+            const fiesta = cal.fiestas[claveFecha(fecha)];
+            if (fiesta) return fiesta;
+            if (fecha.getDay() === 0) {
+                if (fecha >= cal.adviento1 && fecha < new Date(a, 11, 25)) return { tipo: "gozosos", motivo: "Domingo de Adviento" };
+                if (fecha > new Date(a, 11, 25) || fecha < cal.bautismo) return { tipo: "gozosos", motivo: "Domingo del tiempo de Navidad" };
+                if (fecha > sumarDias(cal.P, -46) && fecha < cal.P) return { tipo: "dolorosos", motivo: "Domingo de Cuaresma" };
+            }
+            return null;
+        }
+
+        // Misterios que se rezan por defecto: los del folleto en el Mes de María; si no, los del día de la semana
+        function misteriosDelDia(fecha) {
+            const mm = typeof MM_DIAS !== "undefined" && MM_DIAS.find(d => d.fecha === claveFecha(fecha));
+            if (mm) return { tipo: mm.misterios, motivo: "Mes de María: según el folleto de la Conferencia Episcopal de Chile" };
+            const tipo = Object.keys(misterioTipos).find(k => misterioTipos[k].diasSemana.includes(fecha.getDay()));
+            return { tipo, motivo: "" };
+        }
+
         const hoy = new Date();
         // Mes de María (Chile): 8 de noviembre al 8 de diciembre
         const mesDeMariaActivo = (hoy.getMonth() === 10 && hoy.getDate() >= 8) || (hoy.getMonth() === 11 && hoy.getDate() <= 8);
@@ -902,7 +1006,9 @@
         const PASOS_INICIO = ["ini-senal", ...(mesDeMariaActivo ? ["ini-mm"] : []), "ini-amparo", "ini-invoc"];
         const PASOS_FIN = ["fin-salve", "fin-jac", "fin-pn", "fin-am3", "fin-gl", ...(mesDeMariaActivo ? ["fin-mm"] : []), "fin-sant"];
         const fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
-        const tipoDeHoy = Object.keys(misterioTipos).find(k => misterioTipos[k].diasSemana.includes(hoy.getDay()));
+        const tipoDeHoy = misteriosDelDia(hoy).tipo;
+        const motivoDeHoy = misteriosDelDia(hoy).motivo;
+        const celebracionDeHoy = celebracionDelDia(hoy);
         const capitalizar = s => s.charAt(0).toUpperCase() + s.slice(1);
         const fechaLarga = capitalizar(hoy.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
         const fechaCorta = hoy.toLocaleDateString("es", { day: "numeric", month: "short" }).replace(".", "");
@@ -1102,7 +1208,30 @@
             document.getElementById("decenas-completas").innerHTML = html;
             const t = misterioTipos[state.tipo];
             document.getElementById("rosario-del-dia").innerHTML =
-                `<strong>Misterios ${t.nombre}</strong><span class="fecha-hoy">${fechaLarga}</span>Se rezan los ${t.dias}${state.tipo !== tipoDeHoy ? " · hoy no corresponden" : ""}`;
+                `<strong>Misterios ${t.nombre}</strong><span class="fecha-hoy">${fechaLarga}</span>` +
+                (state.tipo === tipoDeHoy
+                    ? (motivoDeHoy ? `<span class="motivo-hoy">${motivoDeHoy}</span>` : `Se rezan los ${t.dias}`)
+                    : state.tipo === celebracionDeHoy?.tipo
+                        ? `Por la ${celebracionDeHoy.motivo.charAt(0).toLowerCase() + celebracionDeHoy.motivo.slice(1)}`
+                        : `Hoy corresponden los Misterios ${misterioTipos[tipoDeHoy].nombre}`) +
+                tarjetaCelebracion();
+        }
+
+        // Aviso de la celebración litúrgica de hoy, con la opción de rezar sus misterios
+        function tarjetaCelebracion() {
+            const c = celebracionDeHoy;
+            if (!c) return "";
+            const nombre = misterioTipos[c.tipo].nombre;
+            const accion = state.tipo === c.tipo
+                ? (c.tipo === tipoDeHoy ? "" : `<button class="link-btn" data-tipo="${tipoDeHoy}">Volver a los Misterios ${misterioTipos[tipoDeHoy].nombre} del día</button>`)
+                : `<button class="prayer-button" data-tipo="${c.tipo}">Rezar los Misterios ${nombre}</button>`;
+            return `
+                <div class="celebracion-hoy">
+                    <span class="celebracion-fecha">Celebración de hoy · ${fechaCorta}</span>
+                    <span class="celebracion-nombre">${c.motivo}</span>
+                    <span class="celebracion-misterio">Misterios sugeridos: <strong>${nombre}</strong>${c.tipo === tipoDeHoy ? " (coinciden con los de hoy)" : " (opcional)"}</span>
+                    ${accion}
+                </div>`;
         }
 
         // --- ACTUALIZACIÓN DE LA INTERFAZ SEGÚN EL ESTADO ---
